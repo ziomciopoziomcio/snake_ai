@@ -64,7 +64,8 @@
       <workItem from="1722609259793" duration="3000" />
       <workItem from="1722609465819" duration="2000" />
       <workItem from="1722691748536" duration="75000" />
-      <workItem from="1723020788970" duration="2122000" />
+      <workItem from="1723020788970" duration="2471000" />
+      <workItem from="1723049382981" duration="301000" />
     </task>
     <servers />
   </component>
@@ -72,6 +73,6 @@
     <option name="version" value="3" />
   </component>
   <component name="com.intellij.coverage.CoverageDataManagerImpl">
-    <SUITE FILE_PATH="coverage/snake_ai$main.coverage" NAME="main Coverage Results" MODIFIED="1723023002364" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
+    <SUITE FILE_PATH="coverage/snake_ai$main.coverage" NAME="main Coverage Results" MODIFIED="1723049681920" SOURCE_PROVIDER="com.intellij.coverage.DefaultCoverageFileProvider" RUNNER="coverage.py" COVERAGE_BY_TEST_ENABLED="true" COVERAGE_TRACING_ENABLED="false" WORKING_DIRECTORY="$PROJECT_DIR$" />
   </component>
 </project>
