@@ -1,7 +1,5 @@
 import pygame
-
-import components.snake_helper
-from components import snake_helper
+from components import snake_helper, board_helper
 
 # game variables
 '''
@@ -12,6 +10,11 @@ board_height = 20
 snake_speed = 15
 amount_of_food = 1
 snake_amount = 1
+
+# pygame variables
+
+window_width = 800
+window_height = 800
 
 
 # game objects
@@ -56,7 +59,7 @@ class Game:
 # pygame setup
 
 pygame.init()
-screen = pygame.display.set_mode((800, 800))
+screen = pygame.display.set_mode((window_width, window_height))
 pygame.display.set_caption('Snake')
 clock = pygame.time.Clock()
 game = Game()
@@ -64,6 +67,7 @@ running = True
 
 while running:
     screen.fill((0, 0, 0))
+    board_helper.draw_border(screen, (255, 255, 255), board_width, board_height, window_width, window_height)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
