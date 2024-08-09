@@ -39,6 +39,8 @@ class Snake:
             new_position = [current_position[0] + 1, current_position[1]]
         self.positions = [new_position] + self.positions[:-1]
 
+    def get_head_position(self):
+        return self.positions[0]
 
 class Game:
     def __init__(self):
@@ -55,6 +57,13 @@ class Game:
         for food in self.food:
             pygame.draw.rect(screen, (255, 0, 0), (food[0] * 40, food[1] * 40, 40, 40))
 
+    def is_game_over(self):
+        for snake in self.snakes:
+            head_position = snake.get_head_position()
+            if head_position[0] == 0 or head_position[0] == board_width - 1 or \
+               head_position[1] == 0 or head_position[1] == board_height - 1:
+                return True
+        return False
 
 # pygame setup
 
@@ -83,6 +92,9 @@ while running:
 
     for snake in game.snakes:
         snake.move(snake.direction)
+        if game.is_game_over():
+            running = False
+            break
 
     game.draw(screen)
 
