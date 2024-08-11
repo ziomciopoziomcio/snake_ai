@@ -2,9 +2,7 @@ import pygame
 from components import snake_helper, board_helper
 
 # game variables
-'''
-Zmienne te będą sterować zachowaniem gry.
-'''
+# Zmienne te będą sterować zachowaniem gry.
 board_width = 20
 board_height = 20
 snake_speed = 15
@@ -51,6 +49,7 @@ class Snake:
             self.positions = self.positions[:new_length]
         self.length = new_length
 
+
 class Game:
     def __init__(self):
         self.snake_amount = snake_amount
@@ -70,7 +69,7 @@ class Game:
         for snake in self.snakes:
             head_position = snake.get_head_position()
             if head_position[0] == 0 or head_position[0] == board_width - 1 or \
-               head_position[1] == 0 or head_position[1] == board_height - 1:
+                    head_position[1] == 0 or head_position[1] == board_height - 1:
                 return True
         return False
 
@@ -84,6 +83,7 @@ class Game:
                 self.food.append(snake_helper.random_position(board_height, board_width))
                 return True
         return False
+
 
 # pygame setup
 
