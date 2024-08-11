@@ -1,5 +1,7 @@
 # snake_ai
 
+[![Codacy Badge](https://api.codacy.com/project/badge/Grade/08ea685d2e324196ba10c36cd0a55066)](https://app.codacy.com/gh/ziomciopoziomcio/snake_ai?utm_source=github.com&utm_medium=referral&utm_content=ziomciopoziomcio/snake_ai&utm_campaign=Badge_Grade)
+
 ## Project Overview
 
 This project involves developing an AI using reinforcement learning to automatically play the game Snake. The AI will
