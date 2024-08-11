@@ -65,6 +65,17 @@ class Game:
                 return True
         return False
 
+    def point_check(self):
+        for snake in self.snakes:
+            head_position = snake.get_head_position()
+            for food in self.food:
+                if head_position == food:
+                    snake.length += 1
+                    snake.score += 1
+                    self.food.remove(food)
+                    self.food.append(snake_helper.random_position(board_height, board_width))
+                    break
+
 # pygame setup
 
 pygame.init()
@@ -95,6 +106,7 @@ while running:
         if game.is_game_over():
             running = False
             break
+        game.point_check()
 
     game.draw(screen)
 
