@@ -7,7 +7,7 @@ Zmienne te będą sterować zachowaniem gry.
 '''
 board_width = 20
 board_height = 20
-snake_speed = 15
+snake_speed = 8
 amount_of_food = 1
 snake_amount = 1
 
@@ -60,9 +60,18 @@ class Game:
     def is_game_over(self):
         for snake in self.snakes:
             head_position = snake.get_head_position()
-            if head_position[0] == 0 or head_position[0] == board_width - 1 or \
-               head_position[1] == 0 or head_position[1] == board_height - 1:
-                return True
+            if snake.direction == 'UP':
+                if head_position[1] + 1 <= 2:
+                    return True
+            elif snake.direction == 'DOWN':
+                if head_position[1] - 1 >= board_height - 3:
+                    return True
+            elif snake.direction == 'LEFT':
+                if head_position[0] + 1 <= 2:
+                    return True
+            elif snake.direction == 'RIGHT':
+                if head_position[0] - 1 >= board_width - 3:
+                    return True
         return False
 
 # pygame setup
@@ -91,16 +100,12 @@ while running:
                 game.snakes[0].direction = 'RIGHT'
 
     for snake in game.snakes:
-        snake.move(snake.direction)
         if game.is_game_over():
             running = False
             break
+        snake.move(snake.direction)
 
     game.draw(screen)
 
-    pygame.display.update()
-    clock.tick(snake_speed)
-
-    # update display
     pygame.display.update()
     clock.tick(snake_speed)
