@@ -78,6 +78,8 @@ class Game:
         elif snake.direction == 'RIGHT':
             if head_position[0] - 1 >= board_width - 3:
                 return True
+        if head_position in snake.positions[1:]:
+            return True
         return False
 
     def point_check(self, snake):
