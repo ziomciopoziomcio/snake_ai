@@ -2,12 +2,10 @@ import pygame
 from components import snake_helper, board_helper
 
 # game variables
-'''
-Zmienne te będą sterować zachowaniem gry.
-'''
+# Zmienne te będą sterować zachowaniem gry.
 board_width = 20
 board_height = 20
-snake_speed = 15
+snake_speed = 8
 amount_of_food = 1
 snake_amount = 1
 
@@ -51,6 +49,7 @@ class Snake:
             self.positions = self.positions[:new_length]
         self.length = new_length
 
+
 class Game:
     def __init__(self):
         self.snake_amount = snake_amount
@@ -65,12 +64,20 @@ class Game:
                 pygame.draw.rect(screen, snake.color, (pos[0] * 40, pos[1] * 40, 40, 40))
         for food in self.food:
             pygame.draw.rect(screen, (255, 0, 0), (food[0] * 40, food[1] * 40, 40, 40))
-
     def is_game_over(self, snake):
         head_position = snake.get_head_position()
-        if head_position[0] == 0 or head_position[0] == board_width - 1 or \
-           head_position[1] == 0 or head_position[1] == board_height - 1:
-            return True
+        if snake.direction == 'UP':
+            if head_position[1] + 1 <= 2:
+                return True
+        elif snake.direction == 'DOWN':
+            if head_position[1] - 1 >= board_height - 3:
+                return True
+        elif snake.direction == 'LEFT':
+            if head_position[0] + 1 <= 2:
+                return True
+        elif snake.direction == 'RIGHT':
+            if head_position[0] - 1 >= board_width - 3:
+                return True
         return False
 
     def point_check(self, snake):
@@ -83,6 +90,7 @@ class Game:
                 self.food.append(snake_helper.random_position(board_height, board_width))
                 return True
         return False
+
 
 # pygame setup
 
@@ -114,14 +122,11 @@ while running:
         if game.is_game_over(snake):
             running = False
             break
+        snake.move(snake.direction)
         if game.point_check(snake):
             print(snake.score)
 
     game.draw(screen)
 
-    pygame.display.update()
-    clock.tick(snake_speed)
-
-    # update display
     pygame.display.update()
     clock.tick(snake_speed)
