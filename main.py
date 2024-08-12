@@ -118,13 +118,12 @@ while running:
                 game.snakes[0].direction = 'RIGHT'
 
     for snake in game.snakes:
-        snake.move(snake.direction)
         if game.is_game_over(snake):
             running = False
             break
-        snake.move(snake.direction)
         if game.point_check(snake):
             print(snake.score)
+        snake.move(snake.direction)
 
     game.draw(screen)
 
