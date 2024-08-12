@@ -64,22 +64,20 @@ class Game:
                 pygame.draw.rect(screen, snake.color, (pos[0] * 40, pos[1] * 40, 40, 40))
         for food in self.food:
             pygame.draw.rect(screen, (255, 0, 0), (food[0] * 40, food[1] * 40, 40, 40))
-
-    def is_game_over(self):
-        for snake in self.snakes:
-            head_position = snake.get_head_position()
-            if snake.direction == 'UP':
-                if head_position[1] + 1 <= 2:
-                    return True
-            elif snake.direction == 'DOWN':
-                if head_position[1] - 1 >= board_height - 3:
-                    return True
-            elif snake.direction == 'LEFT':
-                if head_position[0] + 1 <= 2:
-                    return True
-            elif snake.direction == 'RIGHT':
-                if head_position[0] - 1 >= board_width - 3:
-                    return True
+    def is_game_over(self, snake):
+        head_position = snake.get_head_position()
+        if snake.direction == 'UP':
+            if head_position[1] + 1 <= 2:
+                return True
+        elif snake.direction == 'DOWN':
+            if head_position[1] - 1 >= board_height - 3:
+                return True
+        elif snake.direction == 'LEFT':
+            if head_position[0] + 1 <= 2:
+                return True
+        elif snake.direction == 'RIGHT':
+            if head_position[0] - 1 >= board_width - 3:
+                return True
         return False
 
     def point_check(self, snake):
@@ -120,12 +118,12 @@ while running:
                 game.snakes[0].direction = 'RIGHT'
 
     for snake in game.snakes:
-        if game.is_game_over():
+        if game.is_game_over(snake):
             running = False
             break
-        snake.move(snake.direction)
         if game.point_check(snake):
             print(snake.score)
+        snake.move(snake.direction)
 
     game.draw(screen)
 
