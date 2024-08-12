@@ -2,12 +2,10 @@ import pygame
 from components import snake_helper, board_helper
 
 # game variables
-'''
-Zmienne te będą sterować zachowaniem gry.
-'''
+# Zmienne te będą sterować zachowaniem gry.
 board_width = 20
 board_height = 20
-snake_speed = 15
+snake_speed = 8
 amount_of_food = 1
 snake_amount = 1
 
@@ -42,6 +40,16 @@ class Snake:
     def get_head_position(self):
         return self.positions[0]
 
+    # Patrzac przyszlosciowo, np kary dla graczy
+    def update_length(self, new_length):
+        if new_length > self.length:
+            for _ in range(new_length - self.length):
+                self.positions.append(self.positions[-1])
+        elif new_length < self.length:
+            self.positions = self.positions[:new_length]
+        self.length = new_length
+
+
 class Game:
     def __init__(self):
         self.snake_amount = snake_amount
@@ -60,10 +68,31 @@ class Game:
     def is_game_over(self):
         for snake in self.snakes:
             head_position = snake.get_head_position()
-            if head_position[0] == 0 or head_position[0] == board_width - 1 or \
-               head_position[1] == 0 or head_position[1] == board_height - 1:
+            if snake.direction == 'UP':
+                if head_position[1] + 1 <= 2:
+                    return True
+            elif snake.direction == 'DOWN':
+                if head_position[1] - 1 >= board_height - 3:
+                    return True
+            elif snake.direction == 'LEFT':
+                if head_position[0] + 1 <= 2:
+                    return True
+            elif snake.direction == 'RIGHT':
+                if head_position[0] - 1 >= board_width - 3:
+                    return True
+        return False
+
+    def point_check(self, snake):
+        head_position = snake.get_head_position()
+        for food in self.food:
+            if head_position == food:
+                snake.update_length(snake.length + 1)
+                snake.score += 1
+                self.food.remove(food)
+                self.food.append(snake_helper.random_position(board_height, board_width))
                 return True
         return False
+
 
 # pygame setup
 
@@ -91,16 +120,14 @@ while running:
                 game.snakes[0].direction = 'RIGHT'
 
     for snake in game.snakes:
-        snake.move(snake.direction)
         if game.is_game_over():
             running = False
             break
+        snake.move(snake.direction)
+        if game.point_check(snake):
+            print(snake.score)
 
     game.draw(screen)
 
-    pygame.display.update()
-    clock.tick(snake_speed)
-
-    # update display
     pygame.display.update()
     clock.tick(snake_speed)
