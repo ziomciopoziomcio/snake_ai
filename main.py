@@ -108,13 +108,14 @@ while running:
         if event.type == pygame.QUIT:
             running = False
         elif event.type == pygame.KEYDOWN:
-            if event.key == pygame.K_w or event.key == pygame.K_UP:
+            current_direction = game.snakes[0].direction
+            if (event.key == pygame.K_w or event.key == pygame.K_UP) and current_direction != 'DOWN':
                 game.snakes[0].direction = 'UP'
-            elif event.key == pygame.K_s or event.key == pygame.K_DOWN:
+            elif (event.key == pygame.K_s or event.key == pygame.K_DOWN) and current_direction != 'UP':
                 game.snakes[0].direction = 'DOWN'
-            elif event.key == pygame.K_a or event.key == pygame.K_LEFT:
+            elif (event.key == pygame.K_a or event.key == pygame.K_LEFT) and current_direction != 'RIGHT':
                 game.snakes[0].direction = 'LEFT'
-            elif event.key == pygame.K_d or event.key == pygame.K_RIGHT:
+            elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT) and current_direction != 'LEFT':
                 game.snakes[0].direction = 'RIGHT'
 
     for snake in game.snakes:
