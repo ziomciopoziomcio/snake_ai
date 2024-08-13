@@ -2,7 +2,7 @@ import tkinter as tk
 from tkinter import messagebox
 
 def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width):
-    def submit():
+    def submit(event=None):
         nonlocal board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width
         try:
             board_width = int(board_width_entry.get())
@@ -87,6 +87,7 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
     window_width_entry.pack()
 
     tk.Button(root, text="Start game", command=submit).pack()
+    root.bind('<Return>', submit)
 
     root.mainloop()
 
