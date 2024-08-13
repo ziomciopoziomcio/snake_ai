@@ -1,16 +1,49 @@
 import tkinter as tk
-
+from tkinter import messagebox
 
 def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width):
     def submit():
         nonlocal board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width
-        board_width = int(board_width_entry.get())
-        board_height = int(board_height_entry.get())
-        snake_speed = int(snake_speed_entry.get())
-        amount_of_food = int(amount_of_food_entry.get())
-        snake_amount = int(snake_amount_entry.get())
-        window_height = int(window_height_entry.get())
-        window_width = int(window_width_entry.get())
+        try:
+            board_width = int(board_width_entry.get())
+            board_height = int(board_height_entry.get())
+            snake_speed = int(snake_speed_entry.get())
+            amount_of_food = int(amount_of_food_entry.get())
+            snake_amount = int(snake_amount_entry.get())
+            window_height = int(window_height_entry.get())
+            window_width = int(window_width_entry.get())
+        except ValueError:
+            messagebox.showerror("Error", "All values must be integers\nUsing default values")
+            board_width = 20
+            board_height = 20
+            snake_speed = 20
+            amount_of_food = 1
+            snake_amount = 1
+            window_height = 800
+            window_width = 800
+            return
+
+        if board_width < 0:
+            messagebox.showerror("Error", "Board width must be a positive integer\nUsing default value")
+            board_width = 20
+        if board_height < 0:
+            messagebox.showerror("Error", "Board height must be a positive integer\nUsing default value")
+            board_height = 20
+        if snake_speed < 0:
+            messagebox.showerror("Error", "Snake speed must be a positive integer\nUsing default value")
+            snake_speed = 20
+        if amount_of_food < 0:
+            messagebox.showerror("Error", "Amount of food must be a positive integer\nUsing default value")
+            amount_of_food = 1
+        if snake_amount < 0:
+            messagebox.showerror("Error", "Snake amount must be a positive integer\nUsing default value")
+            snake_amount = 1
+        if window_height < 0:
+            messagebox.showerror("Error", "Window height must be a positive integer\nUsing default value")
+            window_height = 800
+        if window_width < 0:
+            messagebox.showerror("Error", "Window width must be a positive integer\nUsing default value")
+            window_width = 800
         root.destroy()
 
     root = tk.Tk()
