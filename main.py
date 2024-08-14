@@ -1,5 +1,5 @@
 import pygame
-from components import snake_helper, board_helper
+from components import snake_helper, board_helper, parameters
 
 # game variables
 # Zmienne te będą sterować zachowaniem gry.
@@ -64,6 +64,7 @@ class Game:
                 pygame.draw.rect(screen, snake.color, (pos[0] * 40, pos[1] * 40, 40, 40))
         for food in self.food:
             pygame.draw.rect(screen, (255, 0, 0), (food[0] * 40, food[1] * 40, 40, 40))
+
     def is_game_over(self, snake):
         head_position = snake.get_head_position()
         if snake.direction == 'UP':
@@ -93,6 +94,13 @@ class Game:
                 return True
         return False
 
+
+# parameters menu
+turned_on = True
+
+if turned_on:
+    board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width = parameters.parameters_menu(
+        board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width)
 
 # pygame setup
 
