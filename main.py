@@ -57,6 +57,8 @@ class Game:
         self.food_amount = amount_of_food
         self.food = [self.generate_food_position() for _ in range(self.food_amount)]
         self.game_over = False
+        pygame.font.init()
+        self.font = pygame.font.SysFont(None, 36)
 
     def generate_food_position(self):
         while True:
@@ -71,6 +73,12 @@ class Game:
                 pygame.draw.rect(screen, snake.color, (pos[0] * cell_size, pos[1] * cell_size, cell_size, cell_size))
         for food in self.food:
             pygame.draw.rect(screen, (255, 0, 0), (food[0] * cell_size, food[1] * cell_size, cell_size, cell_size))
+
+    def draw_score(self, screen):
+        score_text = f'Score: {self.snakes[0].score}'
+        score_surface = self.font.render(score_text, True, (0, 0, 0))
+        score_rect = score_surface.get_rect(center=(window_width // 2, 20))
+        screen.blit(score_surface, score_rect)
 
     def is_game_over(self, snake):
         head_position = snake.get_head_position()
@@ -144,6 +152,7 @@ while running:
         snake.move(snake.direction)
 
     game.draw(screen)
+    game.draw_score(screen)
 
     pygame.display.update()
     clock.tick(snake_speed)
