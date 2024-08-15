@@ -23,11 +23,11 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
             window_width = 800
             return
 
-        if board_width < 0:
-            messagebox.showerror("Error", "Board width must be a positive integer\nUsing default value")
+        if board_width < 6:
+            messagebox.showerror("Error", "Board width must be at least 6\nUsing default value")
             board_width = 20
-        if board_height < 0:
-            messagebox.showerror("Error", "Board height must be a positive integer\nUsing default value")
+        if board_height < 6:
+            messagebox.showerror("Error", "Board height must be at least 6\nUsing default value")
             board_height = 20
         if snake_speed < 0:
             messagebox.showerror("Error", "Snake speed must be a positive integer\nUsing default value")
