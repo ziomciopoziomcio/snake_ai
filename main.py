@@ -1,5 +1,6 @@
 import pygame
 from components import snake_helper, board_helper, parameters
+import tkinter as tk
 
 # game variables
 # Zmienne te będą sterować zachowaniem gry.
@@ -149,6 +150,15 @@ clock = pygame.time.Clock()
 game = Game()
 running = True
 
+# potential tkinter window
+if score_type == 2:
+    root = tk.Tk()
+    root.title('Score')
+    root.geometry('300x50')
+    root.resizable(False, False)
+    score_label = tk.Label(root, text=f'Score: {game.snakes[0].score}')
+    score_label.pack()
+
 while running:
     screen.fill((0, 0, 0))
     board_helper.draw_border(screen, (255, 255, 255), board_width, board_height, window_width, window_height)
@@ -170,12 +180,15 @@ while running:
         if game.is_game_over(snake):
             running = False
             break
-        if game.point_check(snake):
-            print(snake.score)
+        game.point_check(snake)
         snake.move(snake.direction)
 
     game.draw(screen)
-    game.draw_score(screen)
+    if score_type == 1:
+        game.draw_score(screen)
+    elif score_type == 2:
+        score_label.config(text=f'Score: {game.snakes[0].score}')
+        score_label.update()
 
     pygame.display.update()
     clock.tick(snake_speed)
