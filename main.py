@@ -65,11 +65,12 @@ class Game:
                 return position
 
     def draw(self, screen):
+        cell_size = min(window_width / board_width, window_height / board_height)
         for snake in self.snakes:
             for pos in snake.positions:
-                pygame.draw.rect(screen, snake.color, (pos[0] * 40, pos[1] * 40, 40, 40))
+                pygame.draw.rect(screen, snake.color, (pos[0] * cell_size, pos[1] * cell_size, cell_size, cell_size))
         for food in self.food:
-            pygame.draw.rect(screen, (255, 0, 0), (food[0] * 40, food[1] * 40, 40, 40))
+            pygame.draw.rect(screen, (255, 0, 0), (food[0] * cell_size, food[1] * cell_size, cell_size, cell_size))
 
     def is_game_over(self, snake):
         head_position = snake.get_head_position()
