@@ -23,7 +23,7 @@ class Snake:
         self.positions = [snake_helper.random_position(board_height, board_width)]
         self.direction = snake_helper.random_direction()
         self.score = 0
-        self.color = (222, 78, 55)
+        self.color = (24, 139, 34)
 
     def move(self, direction):
         current_position = self.positions[0]
