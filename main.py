@@ -55,8 +55,14 @@ class Game:
         self.snake_amount = snake_amount
         self.snakes = [Snake() for _ in range(self.snake_amount)]
         self.food_amount = amount_of_food
-        self.food = [snake_helper.random_position(board_height, board_width) for _ in range(self.food_amount)]
+        self.food = [self.generate_food_position() for _ in range(self.food_amount)]
         self.game_over = False
+
+    def generate_food_position(self):
+        while True:
+            position = snake_helper.random_position(board_height, board_width)
+            if all(position not in snake.positions for snake in self.snakes):
+                return position
 
     def draw(self, screen):
         for snake in self.snakes:
@@ -90,7 +96,7 @@ class Game:
                 snake.update_length(snake.length + 1)
                 snake.score += 1
                 self.food.remove(food)
-                self.food.append(snake_helper.random_position(board_height, board_width))
+                self.food.append(self.generate_food_position())
                 return True
         return False
 
