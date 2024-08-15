@@ -1,9 +1,11 @@
 import tkinter as tk
 from tkinter import messagebox
 
-def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width):
+
+def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width,
+                    score_type):
     def submit(event=None):
-        nonlocal board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width
+        nonlocal board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type
         try:
             board_width = int(board_width_entry.get())
             board_height = int(board_height_entry.get())
@@ -21,6 +23,7 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
             snake_amount = 1
             window_height = 800
             window_width = 800
+            score_type = 0
             return
 
         if board_width < 6:
@@ -44,11 +47,17 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
         if window_width < 0:
             messagebox.showerror("Error", "Window width must be a positive integer\nUsing default value")
             window_width = 800
+        if score_type_var.get() == "Disabled":
+            score_type = 0
+        elif score_type_var.get() == "In game":
+            score_type = 1
+        elif score_type_var.get() == "In window":
+            score_type = 2
         root.destroy()
 
     root = tk.Tk()
     root.title('Parameters')
-    root.geometry('300x400')
+    root.geometry('300x450')
     root.resizable(False, False)
 
     tk.Label(root, text="Board Width:").pack()
@@ -86,9 +95,19 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
     window_width_entry.insert(0, str(window_width))
     window_width_entry.pack()
 
+    tk.Label(root, text="Score Type:").pack()
+    if score_type == 0:
+        score_type_var = tk.StringVar(value="Disabled")
+    elif score_type == 1:
+        score_type_var = tk.StringVar(value="In game")
+    elif score_type == 2:
+        score_type_var = tk.StringVar(value="In window")
+    score_type_menu = tk.OptionMenu(root, score_type_var, "Disabled", "In game", "In window")
+    score_type_menu.pack()
+
     tk.Button(root, text="Start game", command=submit).pack()
     root.bind('<Return>', submit)
 
     root.mainloop()
 
-    return board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width
+    return board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type

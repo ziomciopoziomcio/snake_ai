@@ -8,6 +8,7 @@ board_height = 20
 snake_speed = 8
 amount_of_food = 1
 snake_amount = 1
+score_type = 1
 
 # pygame variables
 
@@ -136,8 +137,8 @@ class Game:
 turned_on = True
 
 if turned_on:
-    board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width = parameters.parameters_menu(
-        board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width)
+    board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type = parameters.parameters_menu(
+        board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type)
 
 # pygame setup
 
