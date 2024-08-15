@@ -21,9 +21,31 @@ class Snake:
     def __init__(self):
         self.length = 1
         self.positions = [snake_helper.random_position(board_height, board_width)]
-        self.direction = snake_helper.random_direction()
+        self.direction = self.get_valid_initial_direction()
         self.score = 0
         self.color = (24, 139, 34)
+
+    def get_initial_length(self):
+        if board_height < 10 and board_width < 10:
+            return 3
+        elif 10 <= board_height <= 30 and 10 <= board_width <= 30:
+            return 5
+        else:
+            return 10
+
+    def get_valid_initial_direction(self):
+        initial_position = self.positions[0]
+        length = self.get_initial_length()
+        directions = ['UP', 'DOWN', 'LEFT', 'RIGHT']
+        if initial_position[0] <= length:
+            directions.remove('LEFT')
+        if initial_position[0] >= board_width - length - 1:
+            directions.remove('RIGHT')
+        if initial_position[1] <= length:
+            directions.remove('UP')
+        if initial_position[1] >= board_height - length - 1:
+            directions.remove('DOWN')
+        return snake_helper.random_direction(directions)
 
     def move(self, direction):
         current_position = self.positions[0]
