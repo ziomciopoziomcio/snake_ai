@@ -1,7 +1,7 @@
 ---
 name: Bug report - for people outside the project
 about: Create a report to help us improve
-title: "[INTERNAL]"
+title: "[EXTERNAL]"
 labels: bug
 assignees: ''
 
