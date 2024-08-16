@@ -1,5 +1,5 @@
 ---
-name: Bug report
+name: Bug report - for people outside the project
 about: Create a report to help us improve
 title: "[INTERNAL]"
 labels: bug
