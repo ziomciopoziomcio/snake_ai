@@ -56,7 +56,7 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
         elif game_mode == 1:
             snake_amount = 2
         if game_mode == 2 or game_mode == 3 or game_mode == 4:
-            messagebox.showerror("Error", "PvAI and AIvAI are not implemented yet\nUsing default value")
+            messagebox.showerror("Error", "AI is not implemented yet\nUsing default value")
             game_mode = 0
 
         root.destroy()
