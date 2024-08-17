@@ -11,7 +11,7 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
             board_height = int(board_height_entry.get())
             snake_speed = int(snake_speed_entry.get())
             amount_of_food = int(amount_of_food_entry.get())
-            snake_amount = int(snake_amount_entry.get())
+            # snake_amount = int(snake_amount_entry.get())
             window_height = int(window_height_entry.get())
             window_width = int(window_width_entry.get())
         except ValueError:
@@ -39,9 +39,9 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
         if amount_of_food < 0:
             messagebox.showerror("Error", "Amount of food must be a positive integer\nUsing default value")
             amount_of_food = 1
-        if snake_amount < 0:
-            messagebox.showerror("Error", "Snake amount must be a positive integer\nUsing default value")
-            snake_amount = 1
+        # if snake_amount < 0:
+        #     messagebox.showerror("Error", "Snake amount must be a positive integer\nUsing default value")
+        #     snake_amount = 1
         if window_height < 0:
             messagebox.showerror("Error", "Window height must be a positive integer\nUsing default value")
             window_height = 600
@@ -51,6 +51,10 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
 
         score_type = {"Disabled": 0, "In game": 1, "In window": 2}.get(score_type_var.get(), 0)
         game_mode = {"Single player": 0, "PvP": 1, "PvAI": 2, "AIvAI": 3, "AI": 4}.get(game_mode_var.get(), 0)
+        if game_mode == 0:
+            snake_amount = 1
+        elif game_mode == 1:
+            snake_amount = 2
         if game_mode == 2 or game_mode == 3 or game_mode == 4:
             messagebox.showerror("Error", "PvAI and AIvAI are not implemented yet\nUsing default value")
             game_mode = 0
@@ -82,10 +86,10 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
     amount_of_food_entry.insert(0, str(amount_of_food))
     amount_of_food_entry.pack()
 
-    tk.Label(root, text="Snake Amount:").pack()
-    snake_amount_entry = tk.Entry(root)
-    snake_amount_entry.insert(0, str(snake_amount))
-    snake_amount_entry.pack()
+    # tk.Label(root, text="Snake Amount:").pack()
+    # snake_amount_entry = tk.Entry(root)
+    # snake_amount_entry.insert(0, str(snake_amount))
+    # snake_amount_entry.pack()
 
     tk.Label(root, text="Window Height:").pack()
     window_height_entry = tk.Entry(root)
