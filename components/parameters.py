@@ -3,9 +3,9 @@ from tkinter import messagebox
 
 
 def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width,
-                    score_type):
+                    score_type, game_mode):
     def submit(event=None):
-        nonlocal board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type
+        nonlocal board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type, game_mode
         try:
             board_width = int(board_width_entry.get())
             board_height = int(board_height_entry.get())
@@ -18,12 +18,13 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
             messagebox.showerror("Error", "All values must be integers\nUsing default values")
             board_width = 20
             board_height = 20
-            snake_speed = 20
+            snake_speed = 5
             amount_of_food = 1
             snake_amount = 1
-            window_height = 800
+            window_height = 600
             window_width = 800
             score_type = 0
+            game_mode = 0
             return
 
         if board_width < 6:
@@ -34,7 +35,7 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
             board_height = 20
         if snake_speed < 0:
             messagebox.showerror("Error", "Snake speed must be a positive integer\nUsing default value")
-            snake_speed = 20
+            snake_speed = 5
         if amount_of_food < 0:
             messagebox.showerror("Error", "Amount of food must be a positive integer\nUsing default value")
             amount_of_food = 1
@@ -43,16 +44,17 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
             snake_amount = 1
         if window_height < 0:
             messagebox.showerror("Error", "Window height must be a positive integer\nUsing default value")
-            window_height = 800
+            window_height = 600
         if window_width < 0:
             messagebox.showerror("Error", "Window width must be a positive integer\nUsing default value")
             window_width = 800
-        if score_type_var.get() == "Disabled":
-            score_type = 0
-        elif score_type_var.get() == "In game":
-            score_type = 1
-        elif score_type_var.get() == "In window":
-            score_type = 2
+
+        score_type = {"Disabled": 0, "In game": 1, "In window": 2}.get(score_type_var.get(), 0)
+        game_mode = {"Single player": 0, "PvP": 1, "PvAI": 2, "AIvAI": 3, "AI": 4}.get(game_mode_var.get(), 0)
+        if game_mode == 2 or game_mode == 3 or game_mode == 4:
+            messagebox.showerror("Error", "PvAI and AIvAI are not implemented yet\nUsing default value")
+            game_mode = 0
+
         root.destroy()
 
     root = tk.Tk()
@@ -96,18 +98,19 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
     window_width_entry.pack()
 
     tk.Label(root, text="Score Type:").pack()
-    if score_type == 0:
-        score_type_var = tk.StringVar(value="Disabled")
-    elif score_type == 1:
-        score_type_var = tk.StringVar(value="In game")
-    elif score_type == 2:
-        score_type_var = tk.StringVar(value="In window")
+    score_type_var = tk.StringVar(value={0: "Disabled", 1: "In game", 2: "In window"}.get(score_type, "Disabled"))
     score_type_menu = tk.OptionMenu(root, score_type_var, "Disabled", "In game", "In window")
     score_type_menu.pack()
+
+    tk.Label(root, text="Game Mode:").pack()
+    game_mode_var = tk.StringVar(
+        value={0: "Single player", 1: "PvP", 2: "PvAI", 3: "AIvAI", 4: "AI"}.get(game_mode, "Single player"))
+    game_mode_menu = tk.OptionMenu(root, game_mode_var, "Single player", "PvP", "PvAI", "AIvAI", "AI")
+    game_mode_menu.pack()
 
     tk.Button(root, text="Start game", command=submit).pack()
     root.bind('<Return>', submit)
 
     root.mainloop()
 
-    return board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type
+    return board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type, game_mode
