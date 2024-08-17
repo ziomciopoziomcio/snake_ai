@@ -138,7 +138,17 @@ class Game:
         elif snake.direction == 'RIGHT':
             if head_position[0] - 1 >= board_width - 3:
                 return True
-        if head_position in [pos for s in self.snakes for pos in s.positions if s != snake]:
+        next_position = list(head_position)
+        if snake.direction == 'UP':
+            next_position[1] -= 1
+        elif snake.direction == 'DOWN':
+            next_position[1] += 1
+        elif snake.direction == 'LEFT':
+            next_position[0] -= 1
+        elif snake.direction == 'RIGHT':
+            next_position[0] += 1
+
+        if any(next_position == pos for s in self.snakes if s != snake for pos in s.positions):
             return True
         return False
 
