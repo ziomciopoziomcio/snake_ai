@@ -117,10 +117,17 @@ class Game:
             pygame.draw.rect(screen, (255, 0, 0), (food[0] * cell_size, food[1] * cell_size, cell_size, cell_size))
 
     def draw_score(self, screen):
-        score_text = f'Score: {self.snakes[0].score}'
-        score_surface = self.font.render(score_text, True, (0, 0, 0))
-        score_rect = score_surface.get_rect(center=(window_width // 2, 20))
-        screen.blit(score_surface, score_rect)
+        if game_mode == 0:
+            score_text = f'Score: {self.snakes[0].score}'
+            score_surface = self.font.render(score_text, True, (0, 0, 0))
+            score_rect = score_surface.get_rect(center=(window_width // 2, 20))
+            screen.blit(score_surface, score_rect)
+
+        elif game_mode == 1:
+            score_text = f'Score: P1 - {self.snakes[0].score} P2 - {self.snakes[1].score}'
+            score_surface = self.font.render(score_text, True, (0, 0, 0))
+            score_rect = score_surface.get_rect(center=(window_width // 2, 20))
+            screen.blit(score_surface, score_rect)
 
     def is_game_over_snake(self, snake):
         if snake.alive == False:
@@ -267,8 +274,12 @@ while running:
     if score_type == 1:
         game.draw_score(screen)
     elif score_type == 2:
-        score_label.config(text=f'Score: {game.snakes[0].score}')
-        score_label.update()
+        if game_mode == 0:
+            score_label.config(text=f'Score: {game.snakes[0].score}')
+            score_label.update()
+        elif game_mode == 1:
+            score_label.config(text=f'Score:\nP1 - {game.snakes[0].score}\nP2 - {game.snakes[1].score}')
+            score_label.update()
 
     pygame.display.update()
     clock.tick(snake_speed)
