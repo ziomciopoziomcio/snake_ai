@@ -136,7 +136,7 @@ class Game:
             screen.blit(score_surface, score_rect)
 
     def is_game_over_snake(self, snake):
-        if snake.alive == False:
+        if not snake.alive:
             return False
         head_position = snake.get_head_position()
         if snake.direction == 'UP':
