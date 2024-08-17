@@ -49,7 +49,6 @@ class Snake:
         self.colour = available_colours[0]
         available_colours.remove(self.colour)
 
-
     def get_initial_length(self):
         if board_height < 10 and board_width < 10:
             return 3
