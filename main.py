@@ -10,6 +10,22 @@ snake_speed = 8
 amount_of_food = 1
 snake_amount = 1
 score_type = 1
+'''
+SCORE TYPE:
+0 - no score
+1 - score in pygame window
+2 - score in tkinter window 
+'''
+game_mode = 0
+'''
+GAME MODE:
+0 - single player
+1 - PvP
+2 - PvAI
+3 - AIvAI
+4 - AI
+'''
+available_colours = [(24, 139, 34), (0, 0, 255)]
 
 # pygame variables
 
@@ -25,7 +41,13 @@ class Snake:
         self.positions = [snake_helper.random_position(board_height, board_width)]
         self.direction = self.get_valid_initial_direction()
         self.score = 0
-        self.color = (24, 139, 34)
+        self.colour = None
+        self.available_colour()
+        self.alive = True
+
+    def available_colour(self):
+        self.colour = available_colours[0]
+        available_colours.remove(self.colour)
 
     def get_initial_length(self):
         if board_height < 10 and board_width < 10:
@@ -50,6 +72,8 @@ class Snake:
         return snake_helper.random_direction(directions)
 
     def move(self, direction):
+        if not self.alive:
+            return
         current_position = self.positions[0]
         if direction == 'UP':
             new_position = [current_position[0], current_position[1] - 1]
@@ -94,17 +118,26 @@ class Game:
         cell_size = min(window_width / board_width, window_height / board_height)
         for snake in self.snakes:
             for pos in snake.positions:
-                pygame.draw.rect(screen, snake.color, (pos[0] * cell_size, pos[1] * cell_size, cell_size, cell_size))
+                pygame.draw.rect(screen, snake.colour, (pos[0] * cell_size, pos[1] * cell_size, cell_size, cell_size))
         for food in self.food:
             pygame.draw.rect(screen, (255, 0, 0), (food[0] * cell_size, food[1] * cell_size, cell_size, cell_size))
 
     def draw_score(self, screen):
-        score_text = f'Score: {self.snakes[0].score}'
-        score_surface = self.font.render(score_text, True, (0, 0, 0))
-        score_rect = score_surface.get_rect(center=(window_width // 2, 20))
-        screen.blit(score_surface, score_rect)
+        if game_mode == 0:
+            score_text = f'Score: {self.snakes[0].score}'
+            score_surface = self.font.render(score_text, True, (0, 0, 0))
+            score_rect = score_surface.get_rect(center=(window_width // 2, 20))
+            screen.blit(score_surface, score_rect)
 
-    def is_game_over(self, snake):
+        elif game_mode == 1:
+            score_text = f'Score: P1 - {self.snakes[0].score} P2 - {self.snakes[1].score}'
+            score_surface = self.font.render(score_text, True, (0, 0, 0))
+            score_rect = score_surface.get_rect(center=(window_width // 2, 20))
+            screen.blit(score_surface, score_rect)
+
+    def is_game_over_snake(self, snake):
+        if not snake.alive:
+            return False
         head_position = snake.get_head_position()
         if snake.direction == 'UP':
             if head_position[1] + 1 <= 2:
@@ -118,7 +151,26 @@ class Game:
         elif snake.direction == 'RIGHT':
             if head_position[0] - 1 >= board_width - 3:
                 return True
-        if head_position in snake.positions[1:]:
+        next_position = list(head_position)
+        if snake.direction == 'UP':
+            next_position[1] -= 1
+        elif snake.direction == 'DOWN':
+            next_position[1] += 1
+        elif snake.direction == 'LEFT':
+            next_position[0] -= 1
+        elif snake.direction == 'RIGHT':
+            next_position[0] += 1
+
+        if any(next_position == pos for s in self.snakes if s != snake for pos in s.positions):
+            return True
+        return False
+
+    def is_game_over(self):
+        i = 0
+        for snake in self.snakes:
+            if not snake.alive:
+                i += 1
+        if i == len(self.snakes):
             return True
         return False
 
@@ -138,8 +190,9 @@ class Game:
 turned_on = True
 
 if turned_on:
-    board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type = parameters.parameters_menu(
-        board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type)
+    board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type, game_mode = parameters.parameters_menu(
+        board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type,
+        game_mode)
 
 # pygame setup
 
@@ -161,39 +214,78 @@ if score_type == 2:
 
 while running:
     direction_changed = False
+    if game_mode == 1:
+        direction_changed2 = False
     screen.fill((0, 0, 0))
     board_helper.draw_border(screen, (255, 255, 255), board_width, board_height, window_width, window_height)
     for event in pygame.event.get():
         if event.type == pygame.QUIT:
             running = False
-        elif event.type == pygame.KEYDOWN and not direction_changed:
-            current_direction = game.snakes[0].direction
-            if (event.key == pygame.K_w or event.key == pygame.K_UP) and current_direction != 'DOWN':
-                direction_changed = True
-                game.snakes[0].direction = 'UP'
-            elif (event.key == pygame.K_s or event.key == pygame.K_DOWN) and current_direction != 'UP':
-                direction_changed = True
-                game.snakes[0].direction = 'DOWN'
-            elif (event.key == pygame.K_a or event.key == pygame.K_LEFT) and current_direction != 'RIGHT':
-                direction_changed = True
-                game.snakes[0].direction = 'LEFT'
-            elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT) and current_direction != 'LEFT':
-                direction_changed = True
-                game.snakes[0].direction = 'RIGHT'
+        elif event.type == pygame.KEYDOWN:
+            if game_mode == 0 and not direction_changed:
+                current_direction = game.snakes[0].direction
+                if (event.key == pygame.K_w or event.key == pygame.K_UP) and current_direction != 'DOWN':
+                    direction_changed = True
+                    game.snakes[0].direction = 'UP'
+                elif (event.key == pygame.K_s or event.key == pygame.K_DOWN) and current_direction != 'UP':
+                    direction_changed = True
+                    game.snakes[0].direction = 'DOWN'
+                elif (event.key == pygame.K_a or event.key == pygame.K_LEFT) and current_direction != 'RIGHT':
+                    direction_changed = True
+                    game.snakes[0].direction = 'LEFT'
+                elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT) and current_direction != 'LEFT':
+                    direction_changed = True
+                    game.snakes[0].direction = 'RIGHT'
+            elif game_mode == 1:
+                current_direction = game.snakes[0].direction
+                current_direction2 = game.snakes[1].direction
+                if not direction_changed:
+                    if event.key == pygame.K_w and current_direction != 'DOWN':
+                        direction_changed = True
+                        game.snakes[0].direction = 'UP'
+                    elif event.key == pygame.K_s and current_direction != 'UP':
+                        direction_changed = True
+                        game.snakes[0].direction = 'DOWN'
+                    elif event.key == pygame.K_a and current_direction != 'RIGHT':
+                        direction_changed = True
+                        game.snakes[0].direction = 'LEFT'
+                    elif event.key == pygame.K_d and current_direction != 'LEFT':
+                        direction_changed = True
+                        game.snakes[0].direction = 'RIGHT'
+                if not direction_changed2:
+                    if event.key == pygame.K_UP and current_direction2 != 'DOWN':
+                        direction_changed = True
+                        game.snakes[1].direction = 'UP'
+                    elif event.key == pygame.K_DOWN and current_direction2 != 'UP':
+                        direction_changed = True
+                        game.snakes[1].direction = 'DOWN'
+                    elif event.key == pygame.K_LEFT and current_direction2 != 'RIGHT':
+                        direction_changed = True
+                        game.snakes[1].direction = 'LEFT'
+                    elif event.key == pygame.K_RIGHT and current_direction2 != 'LEFT':
+                        direction_changed = True
+                        game.snakes[1].direction = 'RIGHT'
 
     for snake in game.snakes:
-        if game.is_game_over(snake):
-            running = False
-            break
+        if game.is_game_over_snake(snake):
+            snake.alive = False
         game.point_check(snake)
         snake.move(snake.direction)
+
+    if game.is_game_over():
+        game.game_over = True
+        running = False
 
     game.draw(screen)
     if score_type == 1:
         game.draw_score(screen)
     elif score_type == 2:
-        score_label.config(text=f'Score: {game.snakes[0].score}')
-        score_label.update()
+        if game_mode == 0:
+            score_label.config(text=f'Score: {game.snakes[0].score}')
+            score_label.update()
+        elif game_mode == 1:
+            score_label.config(text=f'Score:\nP1 - {game.snakes[0].score}\nP2 - {game.snakes[1].score}')
+            score_label.update()
 
     pygame.display.update()
     clock.tick(snake_speed)
