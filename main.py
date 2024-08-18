@@ -168,7 +168,7 @@ class Game:
     def is_game_over(self):
         i = 0
         for snake in self.snakes:
-            if snake.alive == False:
+            if not snake.alive:
                 i += 1
         if i == len(self.snakes):
             return True
