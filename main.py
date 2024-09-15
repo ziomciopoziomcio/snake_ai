@@ -36,10 +36,10 @@ window_height = 800
 # game objects
 
 class Snake:
-    def __init__(self):
+    def __init__(self, position=None, direction=None):
         self.length = 1
-        self.positions = [snake_helper.random_position(board_height, board_width)]
-        self.direction = self.get_valid_initial_direction()
+        self.positions = [position] if position else [snake_helper.random_position(board_height, board_width)]
+        self.direction = direction if direction else self.get_valid_initial_direction()
         self.score = 0
         self.colour = None
         self.available_colour()
@@ -101,7 +101,13 @@ class Snake:
 class Game:
     def __init__(self):
         self.snake_amount = snake_amount
-        self.snakes = [Snake() for _ in range(self.snake_amount)]
+        self.snakes = []
+        existing_positions = []
+        for _ in range(self.snake_amount):
+            pos = snake_helper.random_position(board_height, board_width, existing_positions)
+            existing_positions.append(pos)
+            direction = snake_helper.random_direction(['UP', 'DOWN', 'LEFT', 'RIGHT'])
+            self.snakes.append(Snake(position=pos, direction=direction))
         self.food_amount = amount_of_food
         self.food = [self.generate_food_position() for _ in range(self.food_amount)]
         self.game_over = False
