@@ -38,7 +38,8 @@ window_height = 800
 class Snake:
     def __init__(self, position=None, direction=None):
         self.length = 1
-        self.positions = [position] if position else [snake_helper.random_position(board_height, board_width)]
+        self.positions = [position] if position else [
+            snake_helper.random_position(board_height, board_width, border_distance=3)]
         self.direction = direction if direction else self.get_valid_initial_direction()
         self.score = 0
         self.colour = None
@@ -104,7 +105,7 @@ class Game:
         self.snakes = []
         existing_positions = []
         for _ in range(self.snake_amount):
-            pos = snake_helper.random_position(board_height, board_width, existing_positions)
+            pos = snake_helper.random_position(board_height, board_width, existing_positions, border_distance=3)
             existing_positions.append(pos)
             direction = snake_helper.random_direction(['UP', 'DOWN', 'LEFT', 'RIGHT'])
             self.snakes.append(Snake(position=pos, direction=direction))
