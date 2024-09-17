@@ -202,6 +202,7 @@ if turned_on:
         board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type,
         game_mode)
 
+
 def run():
     # pygame setup
 
@@ -304,5 +305,6 @@ def run():
         return game.snakes[0].score
     else:
         return 0
+
 
 run()
