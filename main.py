@@ -168,6 +168,8 @@ class Game:
             next_position[0] -= 1
         elif snake.direction == 'RIGHT':
             next_position[0] += 1
+        if next_position in snake.positions[1:]:
+            return True
 
         if any(next_position == pos for s in self.snakes if s != snake for pos in s.positions):
             return True
