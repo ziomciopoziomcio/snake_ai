@@ -202,98 +202,123 @@ if turned_on:
         board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type,
         game_mode)
 
-# pygame setup
 
-pygame.init()
-screen = pygame.display.set_mode((window_width, window_height))
-pygame.display.set_caption('Snake')
-clock = pygame.time.Clock()
-game = Game()
-running = True
+# game mode 0 - single player
+def handle_single_player_events(game, event, direction_changed):
+    current_direction = game.snakes[0].direction
+    if (event.key == pygame.K_w or event.key == pygame.K_UP) and current_direction != 'DOWN':
+        direction_changed = True
+        game.snakes[0].direction = 'UP'
+    elif (event.key == pygame.K_s or event.key == pygame.K_DOWN) and current_direction != 'UP':
+        direction_changed = True
+        game.snakes[0].direction = 'DOWN'
+    elif (event.key == pygame.K_a or event.key == pygame.K_LEFT) and current_direction != 'RIGHT':
+        direction_changed = True
+        game.snakes[0].direction = 'LEFT'
+    elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT) and current_direction != 'LEFT':
+        direction_changed = True
+        game.snakes[0].direction = 'RIGHT'
+    return direction_changed
 
-# potential tkinter window
-if score_type == 2:
-    root = tk.Tk()
-    root.title('Score')
-    root.geometry('300x50')
-    root.resizable(False, False)
-    score_label = tk.Label(root, text=f'Score: {game.snakes[0].score}')
-    score_label.pack()
 
-while running:
-    direction_changed = False
-    if game_mode == 1:
-        direction_changed2 = False
-    screen.fill((0, 0, 0))
-    board_helper.draw_border(screen, (255, 255, 255), board_width, board_height, window_width, window_height)
-    for event in pygame.event.get():
-        if event.type == pygame.QUIT:
-            running = False
-        elif event.type == pygame.KEYDOWN:
-            if game_mode == 0 and not direction_changed:
-                current_direction = game.snakes[0].direction
-                if (event.key == pygame.K_w or event.key == pygame.K_UP) and current_direction != 'DOWN':
-                    direction_changed = True
-                    game.snakes[0].direction = 'UP'
-                elif (event.key == pygame.K_s or event.key == pygame.K_DOWN) and current_direction != 'UP':
-                    direction_changed = True
-                    game.snakes[0].direction = 'DOWN'
-                elif (event.key == pygame.K_a or event.key == pygame.K_LEFT) and current_direction != 'RIGHT':
-                    direction_changed = True
-                    game.snakes[0].direction = 'LEFT'
-                elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT) and current_direction != 'LEFT':
-                    direction_changed = True
-                    game.snakes[0].direction = 'RIGHT'
-            elif game_mode == 1:
-                current_direction = game.snakes[0].direction
-                current_direction2 = game.snakes[1].direction
-                if not direction_changed:
-                    if event.key == pygame.K_w and current_direction != 'DOWN':
-                        direction_changed = True
-                        game.snakes[0].direction = 'UP'
-                    elif event.key == pygame.K_s and current_direction != 'UP':
-                        direction_changed = True
-                        game.snakes[0].direction = 'DOWN'
-                    elif event.key == pygame.K_a and current_direction != 'RIGHT':
-                        direction_changed = True
-                        game.snakes[0].direction = 'LEFT'
-                    elif event.key == pygame.K_d and current_direction != 'LEFT':
-                        direction_changed = True
-                        game.snakes[0].direction = 'RIGHT'
-                if not direction_changed2:
-                    if event.key == pygame.K_UP and current_direction2 != 'DOWN':
-                        direction_changed = True
-                        game.snakes[1].direction = 'UP'
-                    elif event.key == pygame.K_DOWN and current_direction2 != 'UP':
-                        direction_changed = True
-                        game.snakes[1].direction = 'DOWN'
-                    elif event.key == pygame.K_LEFT and current_direction2 != 'RIGHT':
-                        direction_changed = True
-                        game.snakes[1].direction = 'LEFT'
-                    elif event.key == pygame.K_RIGHT and current_direction2 != 'LEFT':
-                        direction_changed = True
-                        game.snakes[1].direction = 'RIGHT'
+# game mode 1 - multiplayer
+def handle_pvp_events(game, event, direction_changed, direction_changed2):
+    current_direction = game.snakes[0].direction
+    current_direction2 = game.snakes[1].direction
+    if not direction_changed:
+        if event.key == pygame.K_w and current_direction != 'DOWN':
+            direction_changed = True
+            game.snakes[0].direction = 'UP'
+        elif event.key == pygame.K_s and current_direction != 'UP':
+            direction_changed = True
+            game.snakes[0].direction = 'DOWN'
+        elif event.key == pygame.K_a and current_direction != 'RIGHT':
+            direction_changed = True
+            game.snakes[0].direction = 'LEFT'
+        elif event.key == pygame.K_d and current_direction != 'LEFT':
+            direction_changed = True
+            game.snakes[0].direction = 'RIGHT'
+    if not direction_changed2:
+        if event.key == pygame.K_UP and current_direction2 != 'DOWN':
+            direction_changed2 = True
+            game.snakes[1].direction = 'UP'
+        elif event.key == pygame.K_DOWN and current_direction2 != 'UP':
+            direction_changed2 = True
+            game.snakes[1].direction = 'DOWN'
+        elif event.key == pygame.K_LEFT and current_direction2 != 'RIGHT':
+            direction_changed2 = True
+            game.snakes[1].direction = 'LEFT'
+        elif event.key == pygame.K_RIGHT and current_direction2 != 'LEFT':
+            direction_changed2 = True
+            game.snakes[1].direction = 'RIGHT'
+    return direction_changed, direction_changed2
 
+
+def update_snakes(game):
     for snake in game.snakes:
         if game.is_game_over_snake(snake):
             snake.alive = False
         game.point_check(snake)
         snake.move(snake.direction)
 
-    if game.is_game_over():
-        game.game_over = True
-        running = False
 
-    game.draw(screen)
-    if score_type == 1:
-        game.draw_score(screen)
-    elif score_type == 2:
-        if game_mode == 0:
-            score_label.config(text=f'Score: {game.snakes[0].score}')
-            score_label.update()
-        elif game_mode == 1:
-            score_label.config(text=f'Score:\nP1 - {game.snakes[0].score}\nP2 - {game.snakes[1].score}')
-            score_label.update()
+def run():
+    # pygame setup
+    pygame.init()
+    screen = pygame.display.set_mode((window_width, window_height))
+    pygame.display.set_caption('Snake')
+    clock = pygame.time.Clock()
+    game = Game()
+    running = True
 
-    pygame.display.update()
-    clock.tick(snake_speed)
+    # potential tkinter window
+    if score_type == 2:
+        root = tk.Tk()
+        root.title('Score')
+        root.geometry('300x50')
+        root.resizable(False, False)
+        score_label = tk.Label(root, text=f'Score: {game.snakes[0].score}')
+        score_label.pack()
+
+    while running:
+        direction_changed = False
+        direction_changed2 = False if game_mode == 1 else None
+        screen.fill((0, 0, 0))
+        board_helper.draw_border(screen, (255, 255, 255), board_width, board_height, window_width, window_height)
+        for event in pygame.event.get():
+            if event.type == pygame.QUIT:
+                running = False
+            elif event.type == pygame.KEYDOWN:
+                if game_mode == 0:  # single player
+                    direction_changed = handle_single_player_events(game, event, direction_changed)
+                elif game_mode == 1:  # multiplayer
+                    direction_changed, direction_changed2 = handle_pvp_events(game, event, direction_changed, direction_changed2)
+
+        update_snakes(game)
+
+        if game.is_game_over():
+            game.game_over = True
+            running = False
+
+        game.draw(screen)
+        if score_type == 1:
+            game.draw_score(screen)
+        elif score_type == 2:
+            if game_mode == 0:
+                score_label.config(text=f'Score: {game.snakes[0].score}')
+                score_label.update()
+            elif game_mode == 1:
+                score_label.config(text=f'Score:\nP1 - {game.snakes[0].score}\nP2 - {game.snakes[1].score}')
+                score_label.update()
+
+        pygame.display.update()
+        clock.tick(snake_speed)
+    if game_mode == 1:
+        return game.snakes[0].score, game.snakes[1].score
+    elif game_mode == 0:
+        return game.snakes[0].score
+    else:
+        return 0
+
+
+run()
