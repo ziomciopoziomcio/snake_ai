@@ -203,9 +203,67 @@ if turned_on:
         game_mode)
 
 
+# game mode 0 - single player
+def handle_single_player_events(game, event, direction_changed):
+    current_direction = game.snakes[0].direction
+    if (event.key == pygame.K_w or event.key == pygame.K_UP) and current_direction != 'DOWN':
+        direction_changed = True
+        game.snakes[0].direction = 'UP'
+    elif (event.key == pygame.K_s or event.key == pygame.K_DOWN) and current_direction != 'UP':
+        direction_changed = True
+        game.snakes[0].direction = 'DOWN'
+    elif (event.key == pygame.K_a or event.key == pygame.K_LEFT) and current_direction != 'RIGHT':
+        direction_changed = True
+        game.snakes[0].direction = 'LEFT'
+    elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT) and current_direction != 'LEFT':
+        direction_changed = True
+        game.snakes[0].direction = 'RIGHT'
+    return direction_changed
+
+
+# game mode 1 - multiplayer
+def handle_pvp_events(game, event, direction_changed, direction_changed2):
+    current_direction = game.snakes[0].direction
+    current_direction2 = game.snakes[1].direction
+    if not direction_changed:
+        if event.key == pygame.K_w and current_direction != 'DOWN':
+            direction_changed = True
+            game.snakes[0].direction = 'UP'
+        elif event.key == pygame.K_s and current_direction != 'UP':
+            direction_changed = True
+            game.snakes[0].direction = 'DOWN'
+        elif event.key == pygame.K_a and current_direction != 'RIGHT':
+            direction_changed = True
+            game.snakes[0].direction = 'LEFT'
+        elif event.key == pygame.K_d and current_direction != 'LEFT':
+            direction_changed = True
+            game.snakes[0].direction = 'RIGHT'
+    if not direction_changed2:
+        if event.key == pygame.K_UP and current_direction2 != 'DOWN':
+            direction_changed2 = True
+            game.snakes[1].direction = 'UP'
+        elif event.key == pygame.K_DOWN and current_direction2 != 'UP':
+            direction_changed2 = True
+            game.snakes[1].direction = 'DOWN'
+        elif event.key == pygame.K_LEFT and current_direction2 != 'RIGHT':
+            direction_changed2 = True
+            game.snakes[1].direction = 'LEFT'
+        elif event.key == pygame.K_RIGHT and current_direction2 != 'LEFT':
+            direction_changed2 = True
+            game.snakes[1].direction = 'RIGHT'
+    return direction_changed, direction_changed2
+
+
+def update_snakes(game):
+    for snake in game.snakes:
+        if game.is_game_over_snake(snake):
+            snake.alive = False
+        game.point_check(snake)
+        snake.move(snake.direction)
+
+
 def run():
     # pygame setup
-
     pygame.init()
     screen = pygame.display.set_mode((window_width, window_height))
     pygame.display.set_caption('Snake')
@@ -224,63 +282,19 @@ def run():
 
     while running:
         direction_changed = False
-        if game_mode == 1:
-            direction_changed2 = False
+        direction_changed2 = False if game_mode == 1 else None
         screen.fill((0, 0, 0))
         board_helper.draw_border(screen, (255, 255, 255), board_width, board_height, window_width, window_height)
         for event in pygame.event.get():
             if event.type == pygame.QUIT:
                 running = False
             elif event.type == pygame.KEYDOWN:
-                if game_mode == 0 and not direction_changed:
-                    current_direction = game.snakes[0].direction
-                    if (event.key == pygame.K_w or event.key == pygame.K_UP) and current_direction != 'DOWN':
-                        direction_changed = True
-                        game.snakes[0].direction = 'UP'
-                    elif (event.key == pygame.K_s or event.key == pygame.K_DOWN) and current_direction != 'UP':
-                        direction_changed = True
-                        game.snakes[0].direction = 'DOWN'
-                    elif (event.key == pygame.K_a or event.key == pygame.K_LEFT) and current_direction != 'RIGHT':
-                        direction_changed = True
-                        game.snakes[0].direction = 'LEFT'
-                    elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT) and current_direction != 'LEFT':
-                        direction_changed = True
-                        game.snakes[0].direction = 'RIGHT'
-                elif game_mode == 1:
-                    current_direction = game.snakes[0].direction
-                    current_direction2 = game.snakes[1].direction
-                    if not direction_changed:
-                        if event.key == pygame.K_w and current_direction != 'DOWN':
-                            direction_changed = True
-                            game.snakes[0].direction = 'UP'
-                        elif event.key == pygame.K_s and current_direction != 'UP':
-                            direction_changed = True
-                            game.snakes[0].direction = 'DOWN'
-                        elif event.key == pygame.K_a and current_direction != 'RIGHT':
-                            direction_changed = True
-                            game.snakes[0].direction = 'LEFT'
-                        elif event.key == pygame.K_d and current_direction != 'LEFT':
-                            direction_changed = True
-                            game.snakes[0].direction = 'RIGHT'
-                    if not direction_changed2:
-                        if event.key == pygame.K_UP and current_direction2 != 'DOWN':
-                            direction_changed = True
-                            game.snakes[1].direction = 'UP'
-                        elif event.key == pygame.K_DOWN and current_direction2 != 'UP':
-                            direction_changed = True
-                            game.snakes[1].direction = 'DOWN'
-                        elif event.key == pygame.K_LEFT and current_direction2 != 'RIGHT':
-                            direction_changed = True
-                            game.snakes[1].direction = 'LEFT'
-                        elif event.key == pygame.K_RIGHT and current_direction2 != 'LEFT':
-                            direction_changed = True
-                            game.snakes[1].direction = 'RIGHT'
+                if game_mode == 0:  # single player
+                    direction_changed = handle_single_player_events(game, event, direction_changed)
+                elif game_mode == 1:  # multiplayer
+                    direction_changed, direction_changed2 = handle_pvp_events(game, event, direction_changed, direction_changed2)
 
-        for snake in game.snakes:
-            if game.is_game_over_snake(snake):
-                snake.alive = False
-            game.point_check(snake)
-            snake.move(snake.direction)
+        update_snakes(game)
 
         if game.is_game_over():
             game.game_over = True
