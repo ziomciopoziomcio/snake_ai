@@ -17,3 +17,7 @@ def random_position(height, width, existing_positions=None, min_distance=3, bord
 
 def random_direction(directions):
     return random.choice(directions)
+
+
+def random_colour():
+    return random.randint(0, 255), random.randint(0, 255), random.randint(0, 255)
