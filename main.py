@@ -48,8 +48,11 @@ class Snake:
         self.alive = True
 
     def available_colour(self):
-        self.colour = available_colours[0]
-        available_colours.remove(self.colour)
+        if not available_colours:
+            self.colour = (snake_helper.random_colour())
+        else:
+            self.colour = available_colours[0]
+            available_colours.remove(self.colour)
 
     def get_initial_length(self):
         if board_height < 10 and board_width < 10:
@@ -116,6 +119,8 @@ class Game:
         self.game_over = False
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 36)
+        self.board_width = board_width
+        self.board_height = board_height
 
     def generate_food_position(self):
         while True:
