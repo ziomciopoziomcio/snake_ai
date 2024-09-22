@@ -24,6 +24,7 @@ GAME MODE:
 2 - PvAI
 3 - AIvAI
 4 - AI
+5- ONLY FOR LEARNING PURPOSES
 '''
 available_colours = [(24, 139, 34), (0, 0, 255)]
 
@@ -264,7 +265,9 @@ def update_snakes(game):
         snake.move(snake.direction)
 
 
-def run():
+def run(game_mode=None):
+    if game_mode is None:
+        game_mode = globals().get('game_mode', 0)
     # pygame setup
     pygame.init()
     screen = pygame.display.set_mode((window_width, window_height))
