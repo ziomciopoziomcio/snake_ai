@@ -256,6 +256,31 @@ def handle_pvp_events(game, event, direction_changed, direction_changed2):
             game.snakes[1].direction = 'RIGHT'
     return direction_changed, direction_changed2
 
+ai_direction = None
+
+def ai_move(direction):
+    global ai_direction
+    if direction in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
+        ai_direction = direction
+    return ai_direction
+
+def handle_ai_events(game, direction_changed):
+    current_direction = game.snakes[0].direction
+    move = globals().get('ai_direction', None)
+    if move == 'UP' and current_direction != 'DOWN':
+        direction_changed = True
+        game.snakes[0].direction = 'UP'
+    elif move == 'DOWN' and current_direction != 'UP':
+        direction_changed = True
+        game.snakes[0].direction = 'DOWN'
+    elif move == 'LEFT' and current_direction != 'RIGHT':
+        direction_changed = True
+        game.snakes[0].direction = 'LEFT'
+    elif move == 'RIGHT' and current_direction != 'LEFT':
+        direction_changed = True
+        game.snakes[0].direction = 'RIGHT'
+    return direction_changed
+
 
 def update_snakes(game):
     for snake in game.snakes:
@@ -290,14 +315,19 @@ def run(game_mode=None):
         direction_changed2 = False if game_mode == 1 else None
         screen.fill((0, 0, 0))
         board_helper.draw_border(screen, (255, 255, 255), board_width, board_height, window_width, window_height)
-        for event in pygame.event.get():
-            if event.type == pygame.QUIT:
-                running = False
-            elif event.type == pygame.KEYDOWN:
-                if game_mode == 0:  # single player
-                    direction_changed = handle_single_player_events(game, event, direction_changed)
-                elif game_mode == 1:  # multiplayer
-                    direction_changed, direction_changed2 = handle_pvp_events(game, event, direction_changed, direction_changed2)
+        if game_mode in [0, 1]:
+            for event in pygame.event.get():
+                if event.type == pygame.QUIT:
+                    running = False
+                elif event.type == pygame.KEYDOWN:
+                    if game_mode == 0:  # single player
+                        direction_changed = handle_single_player_events(game, event, direction_changed)
+                    elif game_mode == 1:  # multiplayer
+                        direction_changed, direction_changed2 = handle_pvp_events(game, event, direction_changed,
+                                                                                  direction_changed2)
+        elif game_mode == 5:
+            handle_ai_events(game, direction_changed)
+
 
         update_snakes(game)
 
