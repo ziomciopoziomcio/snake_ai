@@ -1,6 +1,7 @@
 import pygame
 from components import snake_helper, board_helper, parameters
 import tkinter as tk
+from ai import qlearning
 
 # game variables
 # Zmienne te będą sterować zachowaniem gry.
@@ -284,6 +285,8 @@ def handle_ai_events(game, direction_changed):
     elif move == 'RIGHT' and current_direction != 'LEFT':
         direction_changed = True
         game.snakes[0].direction = 'RIGHT'
+    qlearning.update_head_position(game.snakes[0].get_head_position())
+    qlearning.update_points(game.snakes[0].score)
     return direction_changed
 
 
