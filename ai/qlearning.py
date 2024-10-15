@@ -1,11 +1,9 @@
 import numpy as np
 import random
-from main import Game
 
 
 class SnakeEnv:
     def __init__(self):
-        self.game = Game()
         self.qvalues = {}
         self.learning_rate = 0.1
         self.discount = 0.9
