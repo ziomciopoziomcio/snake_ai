@@ -309,7 +309,8 @@ def run(game_mode=None):
     # pygame setup
     game = Game(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height,
                 score_type, game_mode)
-
+    if game_mode == 5:
+        qlearning.SnakeEnv = qlearning.SnakeEnv()
     running = True
 
     # potential tkinter window
@@ -338,11 +339,30 @@ def run(game_mode=None):
                                                                                   direction_changed2)
         elif game_mode == 5:
             vectors = game.location_vectors(0)
-            qlearning.SnakeEnv.get_action(vectors)
+            action = qlearning.SnakeEnv.get_action(vectors)
+            if action == 0:
+                game.direction_update('UP', 0)
+            elif action == 1:
+                game.direction_update('DOWN', 0)
+            elif action == 2:
+                game.direction_update('LEFT', 0)
+            elif action == 3:
+                game.direction_update('RIGHT', 0)
+            points_before = game.snakes[0].score
+            update_snakes(game)
+            points_after = game.snakes[0].score
+            alive_after = game.snakes[0].alive
+            if not alive_after:
+                reward = -1
+            elif points_after > points_before:
+                reward = 1
+            else:
+                reward = 0
             new_vectors = game.location_vectors(0)
-            qlearning.SnakeEnv.update(vectors, new_vectors, 1)
+            qlearning.SnakeEnv.update(vectors, action, new_vectors, reward)
 
-        update_snakes(game)
+        if game_mode in [0, 1]:
+            update_snakes(game)
 
         if game.is_game_over():
             game.game_over = True
