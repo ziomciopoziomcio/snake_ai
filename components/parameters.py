@@ -50,7 +50,7 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
             window_width = 800
 
         score_type = {"Disabled": 0, "In game": 1, "In window": 2}.get(score_type_var.get(), 0)
-        game_mode = {"Single player": 0, "PvP": 1, "PvAI": 2, "AIvAI": 3, "AI": 4}.get(game_mode_var.get(), 0)
+        game_mode = {"Single player": 0, "PvP": 1, "PvAI": 2, "AIvAI": 3, "AI": 4, "QLearning" : 5}.get(game_mode_var.get(), 0)
         if game_mode == 0:
             snake_amount = 1
         elif game_mode == 1:
@@ -108,8 +108,8 @@ def parameters_menu(board_width, board_height, snake_speed, amount_of_food, snak
 
     tk.Label(root, text="Game Mode:").pack()
     game_mode_var = tk.StringVar(
-        value={0: "Single player", 1: "PvP", 2: "PvAI", 3: "AIvAI", 4: "AI"}.get(game_mode, "Single player"))
-    game_mode_menu = tk.OptionMenu(root, game_mode_var, "Single player", "PvP", "PvAI", "AIvAI", "AI")
+        value={0: "Single player", 1: "PvP", 2: "PvAI", 3: "AIvAI", 4: "AI", 5: "QLearning"}.get(game_mode, "Single player"))
+    game_mode_menu = tk.OptionMenu(root, game_mode_var, "Single player", "PvP", "PvAI", "AIvAI", "AI", "QLearning")
     game_mode_menu.pack()
 
     tk.Button(root, text="Start game", command=submit).pack()
