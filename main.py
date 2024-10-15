@@ -105,7 +105,8 @@ class Snake:
 
 
 class Game:
-    def __init__(self, board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type, game_mode):
+    def __init__(self, board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
+                 window_height, score_type, game_mode):
         self.snake_amount = snake_amount
         self.snakes = []
         self.board_width = board_width
@@ -121,7 +122,7 @@ class Game:
             existing_positions.append(pos)
             direction = snake_helper.random_direction(['UP', 'DOWN', 'LEFT', 'RIGHT'])
             self.snakes.append(Snake(position=pos))
-            # self.snakes.append(Snake(position=pos, direction=direction))
+            # self.snakes.append(Snake(position=pos, direction=direction))        TO FIX
         self.food_amount = amount_of_food
         self.food = [self.generate_food_position() for _ in range(self.food_amount)]
         self.game_over = False
@@ -131,7 +132,6 @@ class Game:
         self.screen = pygame.display.set_mode((window_width, window_height))
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
-
 
     def generate_food_position(self):
         while True:
@@ -212,8 +212,10 @@ class Game:
                 return True
         return False
 
-    def direction_update(self, direction):
-        self.snakes[0].direction = direction
+
+# TO CHECK
+    def direction_update(self, direction_temp, snake_num):
+        self.snakes[snake_num].direction = direction_temp
 
 
 # parameters menu
@@ -226,20 +228,23 @@ if turned_on:
 
 
 # game mode 0 - single player
+
 def handle_single_player_events(game, event, direction_changed):
     current_direction = game.snakes[0].direction
+    direction = None
     if (event.key == pygame.K_w or event.key == pygame.K_UP) and current_direction != 'DOWN':
         direction_changed = True
-        game.snakes[0].direction = 'UP'
+        direction = 'UP'
     elif (event.key == pygame.K_s or event.key == pygame.K_DOWN) and current_direction != 'UP':
         direction_changed = True
-        game.snakes[0].direction = 'DOWN'
+        direction = 'DOWN'
     elif (event.key == pygame.K_a or event.key == pygame.K_LEFT) and current_direction != 'RIGHT':
         direction_changed = True
-        game.snakes[0].direction = 'LEFT'
+        direction = 'LEFT'
     elif (event.key == pygame.K_d or event.key == pygame.K_RIGHT) and current_direction != 'LEFT':
         direction_changed = True
-        game.snakes[0].direction = 'RIGHT'
+        direction = 'RIGHT'
+    game.direction_update(direction, 0)
     return direction_changed
 
 
@@ -247,32 +252,36 @@ def handle_single_player_events(game, event, direction_changed):
 def handle_pvp_events(game, event, direction_changed, direction_changed2):
     current_direction = game.snakes[0].direction
     current_direction2 = game.snakes[1].direction
+    direction = None
+    direction2 = None
     if not direction_changed:
         if event.key == pygame.K_w and current_direction != 'DOWN':
             direction_changed = True
-            game.snakes[0].direction = 'UP'
+            direction = 'UP'
         elif event.key == pygame.K_s and current_direction != 'UP':
             direction_changed = True
-            game.snakes[0].direction = 'DOWN'
+            direction = 'DOWN'
         elif event.key == pygame.K_a and current_direction != 'RIGHT':
             direction_changed = True
-            game.snakes[0].direction = 'LEFT'
+            direction = 'LEFT'
         elif event.key == pygame.K_d and current_direction != 'LEFT':
             direction_changed = True
-            game.snakes[0].direction = 'RIGHT'
+            direction = 'RIGHT'
+        game.direction_update(direction, 0)
     if not direction_changed2:
         if event.key == pygame.K_UP and current_direction2 != 'DOWN':
             direction_changed2 = True
-            game.snakes[1].direction = 'UP'
+            direction2 = 'UP'
         elif event.key == pygame.K_DOWN and current_direction2 != 'UP':
             direction_changed2 = True
-            game.snakes[1].direction = 'DOWN'
+            direction2 = 'DOWN'
         elif event.key == pygame.K_LEFT and current_direction2 != 'RIGHT':
             direction_changed2 = True
-            game.snakes[1].direction = 'LEFT'
+            direction2 = 'LEFT'
         elif event.key == pygame.K_RIGHT and current_direction2 != 'LEFT':
             direction_changed2 = True
-            game.snakes[1].direction = 'RIGHT'
+            direction2 = 'RIGHT'
+        game.direction_update(direction2, 0)
     return direction_changed, direction_changed2
 
 
@@ -318,7 +327,8 @@ def run(game_mode=None):
     if game_mode is None:
         game_mode = globals().get('game_mode', 0)
     # pygame setup
-    game = Game(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type, game_mode)
+    game = Game(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height,
+                score_type, game_mode)
 
     running = True
 
