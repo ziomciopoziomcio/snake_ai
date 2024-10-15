@@ -195,7 +195,7 @@ class Game:
         head_position = snake.get_head_position()
         for food in self.food:
             if head_position == food:
-                snake.update_length(snake.length + 1)
+                # snake.update_length(snake.length + 1)
                 snake.score += 1
                 self.food.remove(food)
                 self.food.append(self.generate_food_position())
@@ -262,13 +262,16 @@ def handle_pvp_events(game, event, direction_changed, direction_changed2):
             game.snakes[1].direction = 'RIGHT'
     return direction_changed, direction_changed2
 
+
 ai_direction = None
+
 
 def ai_move(direction):
     global ai_direction
     if direction in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
         ai_direction = direction
     return ai_direction
+
 
 def handle_ai_events(game, direction_changed):
     current_direction = game.snakes[0].direction
@@ -335,7 +338,6 @@ def run(game_mode=None):
                                                                                   direction_changed2)
         elif game_mode == 5:
             handle_ai_events(game, direction_changed)
-
 
         update_snakes(game)
 
