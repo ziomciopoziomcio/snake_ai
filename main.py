@@ -225,7 +225,7 @@ class Game:
         food_positions = self.food
         food_vector_x = food_positions[0][0] - head_position[0]
         food_vector_y = food_positions[0][1] - head_position[1]
-        return border_left, border_right, border_up, border_down, food_vector_x, food_vector_y
+        return (border_left, border_right, border_up, border_down, food_vector_x, food_vector_y)
 
 
 # parameters menu
@@ -337,7 +337,10 @@ def run(game_mode=None):
                         direction_changed, direction_changed2 = handle_pvp_events(game, event, direction_changed,
                                                                                   direction_changed2)
         elif game_mode == 5:
-            handle_ai_events(game, direction_changed)
+            vectors = game.location_vectors(0)
+            qlearning.SnakeEnv.get_action(vectors)
+            new_vectors = game.location_vectors(0)
+            qlearning.SnakeEnv.update(vectors, new_vectors, 1)
 
         update_snakes(game)
 
