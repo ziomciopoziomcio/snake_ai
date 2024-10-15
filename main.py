@@ -105,9 +105,16 @@ class Snake:
 
 
 class Game:
-    def __init__(self):
+    def __init__(self, board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type, game_mode):
         self.snake_amount = snake_amount
         self.snakes = []
+        self.board_width = board_width
+        self.board_height = board_height
+        self.snake_speed = snake_speed
+        self.window_width = window_width
+        self.window_height = window_height
+        self.score_type = score_type
+        self.game_mode = game_mode
         existing_positions = []
         for _ in range(self.snake_amount):
             pos = snake_helper.random_position(board_height, board_width, existing_positions, border_distance=3)
@@ -120,8 +127,11 @@ class Game:
         self.game_over = False
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 36)
-        self.board_width = board_width
-        self.board_height = board_height
+        pygame.init()
+        self.screen = pygame.display.set_mode((window_width, window_height))
+        pygame.display.set_caption('Snake')
+        self.clock = pygame.time.Clock()
+
 
     def generate_food_position(self):
         while True:
@@ -201,6 +211,9 @@ class Game:
                 self.food.append(self.generate_food_position())
                 return True
         return False
+
+    def direction_update(self, direction):
+        self.snakes[0].direction = direction
 
 
 # parameters menu
@@ -305,11 +318,8 @@ def run(game_mode=None):
     if game_mode is None:
         game_mode = globals().get('game_mode', 0)
     # pygame setup
-    pygame.init()
-    screen = pygame.display.set_mode((window_width, window_height))
-    pygame.display.set_caption('Snake')
-    clock = pygame.time.Clock()
-    game = Game()
+    game = Game(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type, game_mode)
+
     running = True
 
     # potential tkinter window
@@ -324,8 +334,8 @@ def run(game_mode=None):
     while running:
         direction_changed = False
         direction_changed2 = False if game_mode == 1 else None
-        screen.fill((0, 0, 0))
-        board_helper.draw_border(screen, (255, 255, 255), board_width, board_height, window_width, window_height)
+        game.screen.fill((0, 0, 0))
+        board_helper.draw_border(game.screen, (255, 255, 255), board_width, board_height, window_width, window_height)
         if game_mode in [0, 1]:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -345,9 +355,9 @@ def run(game_mode=None):
             game.game_over = True
             running = False
 
-        game.draw(screen)
+        game.draw(game.screen)
         if score_type == 1:
-            game.draw_score(screen)
+            game.draw_score(game.screen)
         elif score_type == 2:
             if game_mode == 0:
                 score_label.config(text=f'Score: {game.snakes[0].score}')
@@ -357,7 +367,7 @@ def run(game_mode=None):
                 score_label.update()
 
         pygame.display.update()
-        clock.tick(snake_speed)
+        game.clock.tick(snake_speed)
     if game_mode == 1:
         return game.snakes[0].score, game.snakes[1].score
     elif game_mode == 0:
