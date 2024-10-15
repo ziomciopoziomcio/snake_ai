@@ -1,6 +1,6 @@
 import numpy as np
 import random
-from main import Game, ai_move
+from main import Game
 
 
 class SnakeEnv:
@@ -15,7 +15,8 @@ class SnakeEnv:
             self.qvalues[state] = np.zeros(4)
         if next_state not in self.qvalues:
             self.qvalues[next_state] = np.zeros(4)
-        self.qvalues[state][action] = self.qvalues[state][action] + self.learning_rate * (reward + self.discount * max(self.qvalues[next_state]) - self.qvalues[state][action])
+        self.qvalues[state][action] = self.qvalues[state][action] + self.learning_rate * (
+                    reward + self.discount * max(self.qvalues[next_state]) - self.qvalues[state][action])
 
     def get_action(self, state):
         if state not in self.qvalues:
@@ -23,4 +24,3 @@ class SnakeEnv:
         value = max(self.qvalues[state])
         index = random.choice([i for i, v in enumerate(self.qvalues[state]) if v == value])
         return index
-
