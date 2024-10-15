@@ -212,10 +212,20 @@ class Game:
                 return True
         return False
 
-
-# TO CHECK
+    # TO CHECK
     def direction_update(self, direction_temp, snake_num):
         self.snakes[snake_num].direction = direction_temp
+
+    def location_vectors(self, snake_num):
+        head_position = self.snakes[snake_num].get_head_position()
+        border_left = head_position[0]
+        border_right = self.board_width - head_position[0] - 1
+        border_up = head_position[1]
+        border_down = self.board_height - head_position[1] - 1
+        food_positions = self.food
+        food_vector_x = food_positions[0][0] - head_position[0]
+        food_vector_y = food_positions[0][1] - head_position[1]
+        return border_left, border_right, border_up, border_down, food_vector_x, food_vector_y
 
 
 # parameters menu
@@ -283,36 +293,6 @@ def handle_pvp_events(game, event, direction_changed, direction_changed2):
             direction2 = 'RIGHT'
         game.direction_update(direction2, 0)
     return direction_changed, direction_changed2
-
-
-ai_direction = None
-
-
-def ai_move(direction):
-    global ai_direction
-    if direction in ['UP', 'DOWN', 'LEFT', 'RIGHT']:
-        ai_direction = direction
-    return ai_direction
-
-
-def handle_ai_events(game, direction_changed):
-    current_direction = game.snakes[0].direction
-    move = globals().get('ai_direction', None)
-    if move == 'UP' and current_direction != 'DOWN':
-        direction_changed = True
-        game.snakes[0].direction = 'UP'
-    elif move == 'DOWN' and current_direction != 'UP':
-        direction_changed = True
-        game.snakes[0].direction = 'DOWN'
-    elif move == 'LEFT' and current_direction != 'RIGHT':
-        direction_changed = True
-        game.snakes[0].direction = 'LEFT'
-    elif move == 'RIGHT' and current_direction != 'LEFT':
-        direction_changed = True
-        game.snakes[0].direction = 'RIGHT'
-    qlearning.update_head_position(game.snakes[0].get_head_position())
-    qlearning.update_points(game.snakes[0].score)
-    return direction_changed
 
 
 def update_snakes(game):
