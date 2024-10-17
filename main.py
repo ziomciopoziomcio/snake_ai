@@ -38,14 +38,17 @@ window_height = 800
 # game objects
 
 class Snake:
-    def __init__(self, position=None):
+    def __init__(self, position=None, game_mode_class=None):
         self.length = 1
         self.positions = [position] if position else [
             snake_helper.random_position(board_height, board_width, border_distance=3)]
         self.direction = self.get_valid_initial_direction()
         self.score = 0
-        self.colour = None
-        self.available_colour()
+        if game_mode_class == 5:
+            self.colour = (255, 255, 255)
+        else:
+            self.colour = None
+            self.available_colour()
         self.alive = True
 
     def available_colour(self):
@@ -105,31 +108,33 @@ class Snake:
 
 
 class Game:
-    def __init__(self, board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
-                 window_height, score_type, game_mode):
-        self.snake_amount = snake_amount
+    def __init__(self, board_width_class, board_height_class, snake_speed_class, amount_of_food_class,
+                 snake_amount_class, window_width_class,
+                 window_height_class, score_type_class, game_mode_class):
+        self.snake_amount = snake_amount_class
         self.snakes = []
-        self.board_width = board_width
-        self.board_height = board_height
-        self.snake_speed = snake_speed
-        self.window_width = window_width
-        self.window_height = window_height
-        self.score_type = score_type
-        self.game_mode = game_mode
+        self.board_width = board_width_class
+        self.board_height = board_height_class
+        self.snake_speed = snake_speed_class
+        self.window_width = window_width_class
+        self.window_height = window_height_class
+        self.score_type = score_type_class
+        self.game_mode = game_mode_class
         existing_positions = []
         for _ in range(self.snake_amount):
-            pos = snake_helper.random_position(board_height, board_width, existing_positions, border_distance=3)
+            pos = snake_helper.random_position(board_height_class, board_width_class, existing_positions,
+                                               border_distance=3)
             existing_positions.append(pos)
             direction = snake_helper.random_direction(['UP', 'DOWN', 'LEFT', 'RIGHT'])
-            self.snakes.append(Snake(position=pos))
+            self.snakes.append(Snake(position=pos, game_mode_class=self.game_mode))
             # self.snakes.append(Snake(position=pos, direction=direction))        TO FIX
-        self.food_amount = amount_of_food
+        self.food_amount = amount_of_food_class
         self.food = [self.generate_food_position() for _ in range(self.food_amount)]
         self.game_over = False
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 36)
         pygame.init()
-        self.screen = pygame.display.set_mode((window_width, window_height))
+        self.screen = pygame.display.set_mode((window_width_class, window_height_class))
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
 
@@ -229,7 +234,7 @@ class Game:
 
 
 # parameters menu
-turned_on = True
+turned_on = False
 
 if turned_on:
     board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type, game_mode = parameters.parameters_menu(
@@ -303,17 +308,19 @@ def update_snakes(game):
         snake.move(snake.direction)
 
 
-def run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type,
-        game_mode):
+def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun, window_width_fun,
+        window_height_fun, score_type_fun,
+        game_mode_fun):
     # pygame setup
-    game = Game(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height,
-                score_type, game_mode)
-    if game_mode == 5:
-        qlearning.SnakeEnv = qlearning.SnakeEnv()
+    game = Game(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun,
+                window_width_fun, window_height_fun,
+                score_type_fun, game_mode_fun)
+    if game_mode_fun == 5:
+        snakeenv = qlearning.SnakeEnv()
     running = True
 
     # potential tkinter window
-    if score_type == 2:
+    if score_type_fun == 2:
         root = tk.Tk()
         root.title('Score')
         root.geometry('300x50')
@@ -323,22 +330,23 @@ def run(board_width, board_height, snake_speed, amount_of_food, snake_amount, wi
 
     while running:
         direction_changed = False
-        direction_changed2 = False if game_mode == 1 else None
+        direction_changed2 = False if game_mode_fun == 1 else None
         game.screen.fill((0, 0, 0))
-        board_helper.draw_border(game.screen, (255, 255, 255), board_width, board_height, window_width, window_height)
-        if game_mode in [0, 1]:
+        board_helper.draw_border(game.screen, (255, 255, 255), board_width_fun, board_height_fun, window_width_fun,
+                                 window_height_fun)
+        if game_mode_fun in [0, 1]:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
                     running = False
                 elif event.type == pygame.KEYDOWN:
-                    if game_mode == 0:  # single player
+                    if game_mode_fun == 0:  # single player
                         direction_changed = handle_single_player_events(game, event, direction_changed)
-                    elif game_mode == 1:  # multiplayer
+                    elif game_mode_fun == 1:  # multiplayer
                         direction_changed, direction_changed2 = handle_pvp_events(game, event, direction_changed,
                                                                                   direction_changed2)
-        elif game_mode == 5:
+        elif game_mode_fun == 5:
             vectors = game.location_vectors(0)
-            action = qlearning.SnakeEnv.get_action(vectors)
+            action = snakeenv.get_action(vectors)
             if action == 0:
                 game.direction_update('UP', 0)
             elif action == 1:
@@ -358,9 +366,9 @@ def run(board_width, board_height, snake_speed, amount_of_food, snake_amount, wi
             else:
                 reward = 0
             new_vectors = game.location_vectors(0)
-            qlearning.SnakeEnv.update(vectors, action, new_vectors, reward)
+            snakeenv.update(vectors, action, new_vectors, reward)
 
-        if game_mode in [0, 1]:
+        if game_mode_fun in [0, 1]:
             update_snakes(game)
 
         if game.is_game_over():
@@ -368,24 +376,24 @@ def run(board_width, board_height, snake_speed, amount_of_food, snake_amount, wi
             running = False
 
         game.draw(game.screen)
-        if score_type == 1:
+        if score_type_fun == 1:
             game.draw_score(game.screen)
-        elif score_type == 2:
-            if game_mode == 0:
+        elif score_type_fun == 2:
+            if game_mode_fun == 0:
                 score_label.config(text=f'Score: {game.snakes[0].score}')
                 score_label.update()
-            elif game_mode == 1:
+            elif game_mode_fun == 1:
                 score_label.config(text=f'Score:\nP1 - {game.snakes[0].score}\nP2 - {game.snakes[1].score}')
                 score_label.update()
 
         pygame.display.update()
-        game.clock.tick(snake_speed)
-    if game_mode == 1:
+        game.clock.tick(snake_speed_fun)
+    if game_mode_fun == 1:
         return game.snakes[0].score, game.snakes[1].score
-    elif game_mode == 0:
+    elif game_mode_fun == 0:
         return game.snakes[0].score
-    elif game_mode == 5:
-        qlearning.SnakeEnv.save()
+    elif game_mode_fun == 5:
+        snakeenv.save()
         return game.snakes[0].score
     else:
         return 0
