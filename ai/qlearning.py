@@ -1,5 +1,6 @@
 import numpy as np
 import random
+import json
 
 
 class SnakeEnv:
@@ -22,3 +23,11 @@ class SnakeEnv:
         value = max(self.qvalues[state])
         index = random.choice([i for i, v in enumerate(self.qvalues[state]) if v == value])
         return index
+
+    def save(self):
+        with open('qvalues.json', 'w') as f:
+            json.dump(self.qvalues, f)
+
+    def load(self):
+        with open('qvalues.json', 'r') as f:
+            self.qvalues = json.load(f)
