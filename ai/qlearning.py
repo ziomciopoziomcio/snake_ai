@@ -5,10 +5,14 @@ import os
 
 
 class SnakeEnv:
-    def __init__(self):
+    def __init__(self, qvalues, counter, agent="off"):
         self.qvalues = {}
         self.counter = 0
-        self.load()
+        if agent == "off":
+            self.load()
+        else:
+            self.qvalues = qvalues
+            self.counter = counter
         self.learning_rate = 0.1
         self.discount = 0.9
 
@@ -47,7 +51,7 @@ class SnakeEnv:
             data = json.load(f)
         qvalues_str_keys = data.get('qvalues', {})
         self.qvalues = {eval(k): np.array(v) for k, v in qvalues_str_keys.items()}
-        self.counter = data.get('counter', 0) + 1
+        self.counter = data.get('counter', 0)
 
 
 def generate_empty_file():

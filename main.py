@@ -337,13 +337,14 @@ def update_snakes(game):
 
 def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun, window_width_fun,
         window_height_fun, score_type_fun,
-        game_mode_fun):
+        game_mode_fun, qvalues=None, counter=0, agent="off"):
     # pygame setup
     game = Game(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun,
                 window_width_fun, window_height_fun,
                 score_type_fun, game_mode_fun)
     if game_mode_fun == 5:
-        snakeenv = qlearning.SnakeEnv()
+        counter += 1
+        snakeenv = qlearning.SnakeEnv(qvalues, counter, agent=agent)
     running = True
 
     # potential tkinter window
@@ -424,8 +425,8 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
         return game.snakes[0].score
     elif game_mode_fun == 5:
         snakeenv.save()
-        print(f'Game number: {snakeenv.counter}, Score: {game.snakes[0].score}')
-        return game.snakes[0].score
+        print(f'Game number: {counter}, Score: {game.snakes[0].score}')
+        return snakeenv.qvalues, counter
     else:
         return 0
 
