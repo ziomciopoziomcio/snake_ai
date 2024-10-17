@@ -23,9 +23,13 @@ class SnakeEnv:
     def get_action(self, state):
         if state not in self.qvalues:
             self.qvalues[state] = np.zeros(4)
-        value = max(self.qvalues[state])
-        index = random.choice([i for i, v in enumerate(self.qvalues[state]) if v == value])
-        return index
+        p = random.random()
+        if p < 0.1:
+            return random.randint(0, 3)
+        else:
+            value = max(self.qvalues[state])
+            index = random.choice([i for i, v in enumerate(self.qvalues[state]) if v == value])
+            return index
 
     def save(self):
         file_path = os.path.join(os.path.dirname(__file__), 'qvalues.json')
