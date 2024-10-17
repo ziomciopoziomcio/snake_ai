@@ -11,6 +11,6 @@ window_width = 800
 window_height = 800
 turned_on = False
 
-for i in range(1002):
+for i in range(1000):
     run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type,
         game_mode)

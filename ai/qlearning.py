@@ -32,7 +32,7 @@ class SnakeEnv:
         qvalues_str_keys = {str(k): v.tolist() for k, v in self.qvalues.items()}
         data = {
             'qvalues': qvalues_str_keys,
-            'counter': self.counter + 1
+            'counter': self.counter
         }
         with open(file_path, 'w') as f:
             json.dump(data, f)
@@ -43,7 +43,7 @@ class SnakeEnv:
             data = json.load(f)
         qvalues_str_keys = data.get('qvalues', {})
         self.qvalues = {eval(k): np.array(v) for k, v in qvalues_str_keys.items()}
-        self.counter = data.get('counter', 0)
+        self.counter = data.get('counter', 0) + 1
 
 
 def generate_empty_file():
