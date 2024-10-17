@@ -303,9 +303,8 @@ def update_snakes(game):
         snake.move(snake.direction)
 
 
-def run(game_mode=None):
-    if game_mode is None:
-        game_mode = globals().get('game_mode', 0)
+def run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type,
+        game_mode):
     # pygame setup
     game = Game(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height,
                 score_type, game_mode)
@@ -389,4 +388,5 @@ def run(game_mode=None):
         return 0
 
 
-run()
+run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type,
+    game_mode)
