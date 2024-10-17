@@ -229,9 +229,9 @@ class Game:
 
     def location_vectors(self, snake_num):
         head_position = self.snakes[snake_num].get_head_position()
-        border_left = head_position[0]
+        border_left = head_position[0] - 1
         border_right = self.board_width - head_position[0] - 1
-        border_up = head_position[1]
+        border_up = head_position[1] - 1
         border_down = self.board_height - head_position[1] - 1
         food_positions = self.food
         food_vector_x = food_positions[0][0] - head_position[0]
