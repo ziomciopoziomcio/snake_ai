@@ -16,6 +16,7 @@ SCORE TYPE:
 0 - no score
 1 - score in pygame window
 2 - score in tkinter window 
+3 - score in pygame window with QLearning counter
 '''
 game_mode = 0
 '''
@@ -110,7 +111,7 @@ class Snake:
 class Game:
     def __init__(self, board_width_class, board_height_class, snake_speed_class, amount_of_food_class,
                  snake_amount_class, window_width_class,
-                 window_height_class, score_type_class, game_mode_class):
+                 window_height_class, score_type_class, game_mode_class, counter=0):
         self.snake_amount = snake_amount_class
         self.snakes = []
         self.board_width = board_width_class
@@ -152,15 +153,20 @@ class Game:
         for food in self.food:
             pygame.draw.rect(screen, (255, 0, 0), (food[0] * cell_size, food[1] * cell_size, cell_size, cell_size))
 
-    def draw_score(self, screen):
-        if game_mode == 0:
+    def draw_score(self, screen, counter=0):
+        if self.game_mode == 0:
             score_text = f'Score: {self.snakes[0].score}'
             score_surface = self.font.render(score_text, True, (0, 0, 0))
             score_rect = score_surface.get_rect(center=(window_width // 2, 20))
             screen.blit(score_surface, score_rect)
 
-        elif game_mode == 1:
+        elif self.game_mode == 1:
             score_text = f'Score: P1 - {self.snakes[0].score} P2 - {self.snakes[1].score}'
+            score_surface = self.font.render(score_text, True, (0, 0, 0))
+            score_rect = score_surface.get_rect(center=(window_width // 2, 20))
+            screen.blit(score_surface, score_rect)
+        elif self.game_mode == 5:
+            score_text = f'Score: {self.snakes[0].score}, Counter: {counter}'
             score_surface = self.font.render(score_text, True, (0, 0, 0))
             score_rect = score_surface.get_rect(center=(window_width // 2, 20))
             screen.blit(score_surface, score_rect)
@@ -377,7 +383,10 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
 
         game.draw(game.screen)
         if score_type_fun == 1:
-            game.draw_score(game.screen)
+            if game_mode_fun == 5:
+                game.draw_score(game.screen, snakeenv.counter)
+            else:
+                game.draw_score(game.screen)
         elif score_type_fun == 2:
             if game_mode_fun == 0:
                 score_label.config(text=f'Score: {game.snakes[0].score}')
