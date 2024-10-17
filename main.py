@@ -46,7 +46,7 @@ class Snake:
         self.direction = self.get_valid_initial_direction()
         self.score = 0
         if game_mode_class == 5:
-            self.colour = (255, 255, 255)
+            self.colour = (24, 139, 34)
         else:
             self.colour = None
             self.available_colour()
