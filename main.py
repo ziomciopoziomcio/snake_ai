@@ -135,10 +135,7 @@ class Game:
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 36)
         pygame.init()
-        if self.game_mode == 5:
-            self.screen = pygame.display.set_mode((800, 800), pygame.NOFRAME)
-        else:
-            self.screen = pygame.display.set_mode((window_width_class, window_height_class))
+        self.screen = pygame.display.set_mode((window_width_class, window_height_class))
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
 
