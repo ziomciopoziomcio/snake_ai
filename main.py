@@ -135,7 +135,10 @@ class Game:
         pygame.font.init()
         self.font = pygame.font.SysFont(None, 36)
         pygame.init()
-        self.screen = pygame.display.set_mode((window_width_class, window_height_class))
+        if self.game_mode == 5:
+            self.screen = pygame.display.set_mode((800, 800), pygame.NOFRAME)
+        else:
+            self.screen = pygame.display.set_mode((window_width_class, window_height_class))
         pygame.display.set_caption('Snake')
         self.clock = pygame.time.Clock()
 
@@ -268,6 +271,27 @@ def handle_single_player_events(game, event, direction_changed):
     game.direction_update(direction, 0)
     return direction_changed
 
+def handle_ai_events(game, direction_changed, ai_direction):
+    current_direction = game.snakes[0].direction
+    direction = None
+    if ai_direction == 'UP' and current_direction != 'DOWN':
+        direction_changed = True
+        direction = 'UP'
+    elif ai_direction == 'DOWN' and current_direction != 'UP':
+        direction_changed = True
+        direction = 'DOWN'
+    elif ai_direction == 'LEFT' and current_direction != 'RIGHT':
+        direction_changed = True
+        direction = 'LEFT'
+    elif ai_direction == 'RIGHT' and current_direction != 'LEFT':
+        direction_changed = True
+        direction = 'RIGHT'
+    if direction:
+        game.direction_update(direction, 0)
+    else:
+        game.direction_update(current_direction, 0)
+    return direction_changed
+
 
 # game mode 1 - multiplayer
 def handle_pvp_events(game, event, direction_changed, direction_changed2):
@@ -354,13 +378,13 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
             vectors = game.location_vectors(0)
             action = snakeenv.get_action(vectors)
             if action == 0:
-                game.direction_update('UP', 0)
+                direction_changed = handle_ai_events(game, direction_changed, 'UP')
             elif action == 1:
-                game.direction_update('DOWN', 0)
+                direction_changed = handle_ai_events(game, direction_changed, 'DOWN')
             elif action == 2:
-                game.direction_update('LEFT', 0)
+                direction_changed = handle_ai_events(game, direction_changed, 'LEFT')
             elif action == 3:
-                game.direction_update('RIGHT', 0)
+                direction_changed = handle_ai_events(game, direction_changed, 'RIGHT')
             points_before = game.snakes[0].score
             update_snakes(game)
             points_after = game.snakes[0].score
@@ -403,6 +427,7 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
         return game.snakes[0].score
     elif game_mode_fun == 5:
         snakeenv.save()
+        print(f'Game number: {snakeenv.counter}, Score: {game.snakes[0].score}')
         return game.snakes[0].score
     else:
         return 0
