@@ -31,7 +31,7 @@ def load():
     return qvalues, counter
 
 
-for j in range(1):
+for j in range(2):
     qvalues, counter = load()
     for z in range(10):
         for i in range(100):
