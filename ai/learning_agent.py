@@ -3,7 +3,7 @@ import time
 
 board_width = 20
 board_height = 20
-snake_speed = 10000
+snake_speed = 100000
 amount_of_food = 1
 snake_amount = 1
 score_type = 1
