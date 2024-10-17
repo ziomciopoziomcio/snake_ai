@@ -384,6 +384,9 @@ def run(board_width, board_height, snake_speed, amount_of_food, snake_amount, wi
         return game.snakes[0].score, game.snakes[1].score
     elif game_mode == 0:
         return game.snakes[0].score
+    elif game_mode == 5:
+        qlearning.SnakeEnv.save()
+        return game.snakes[0].score
     else:
         return 0
 

@@ -27,20 +27,22 @@ class SnakeEnv:
         return index
 
     def save(self):
+        qvalues_str_keys = {str(k): v.tolist() for k, v in self.qvalues.items()}
         with open('ai/qvalues.json', 'w') as f:
-            json.dump(self.qvalues, f)
+            json.dump(qvalues_str_keys, f)
 
     def load(self):
         file_path = os.path.abspath('ai/qvalues.json')
         print(f"Looking for 'qvalues.json' in: {file_path}")
         with open(file_path, 'r') as f:
-            self.qvalues = json.load(f)
+            qvalues_str_keys = json.load(f)
+        self.qvalues = {eval(k): np.array(v) for k, v in qvalues_str_keys.items()}
 
 
 def generate_empty_file():
+    qvalues_str_keys = {str(k): v for k, v in {}}
     with open('qvalues.json', 'w') as f:
-        empty = {}
-        json.dump(empty, f)
+        json.dump(qvalues_str_keys, f)
 
 
 if __name__ == '__main__':
