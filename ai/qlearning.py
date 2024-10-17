@@ -27,13 +27,14 @@ class SnakeEnv:
         return index
 
     def save(self):
+        file_path = os.path.join(os.path.dirname(__file__), 'qvalues.json')
         qvalues_str_keys = {str(k): v.tolist() for k, v in self.qvalues.items()}
-        with open('ai/qvalues.json', 'w') as f:
+        with open(file_path, 'w') as f:
             json.dump(qvalues_str_keys, f)
 
     def load(self):
-        file_path = os.path.abspath('ai/qvalues.json')
-        print(f"Looking for 'qvalues.json' in: {file_path}")
+        file_path = os.path.join(os.path.dirname(__file__), 'qvalues.json')
+        # print(f"Looking for 'qvalues.json' in: {file_path}")
         with open(file_path, 'r') as f:
             qvalues_str_keys = json.load(f)
         self.qvalues = {eval(k): np.array(v) for k, v in qvalues_str_keys.items()}
