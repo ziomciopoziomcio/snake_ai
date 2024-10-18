@@ -5,7 +5,7 @@ import os
 
 
 class SnakeEnv:
-    def __init__(self, qvalues, counter, agent="off"):
+    def __init__(self, qvalues, counter, agent="off", exploration_rate=0.1):
         self.qvalues = {}
         self.counter = 0
         if agent == "off":
@@ -15,6 +15,7 @@ class SnakeEnv:
             self.counter = counter
         self.learning_rate = 0.1
         self.discount = 0.9
+        self.exploration_rate = exploration_rate
 
     def update(self, state, action, next_state, reward):
         if state not in self.qvalues:
@@ -28,7 +29,7 @@ class SnakeEnv:
         if state not in self.qvalues:
             self.qvalues[state] = np.zeros(4)
         p = random.random()
-        if p < 0.1:
+        if p < self.exploration_rate:
             return random.randint(0, 3)
         else:
             value = max(self.qvalues[state])

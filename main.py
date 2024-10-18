@@ -111,7 +111,7 @@ class Snake:
 class Game:
     def __init__(self, board_width_class, board_height_class, snake_speed_class, amount_of_food_class,
                  snake_amount_class, window_width_class,
-                 window_height_class, score_type_class, game_mode_class, counter=0):
+                 window_height_class, score_type_class, game_mode_class, counter=0, visualise=True):
         self.snake_amount = snake_amount_class
         self.snakes = []
         self.board_width = board_width_class
@@ -132,7 +132,7 @@ class Game:
         self.food_amount = amount_of_food_class
         self.food = [self.generate_food_position() for _ in range(self.food_amount)]
         self.game_over = False
-        if self.game_mode != 5:
+        if visualise == True:
             pygame.init()
             pygame.font.init()
             self.font = pygame.font.SysFont(None, 36)
@@ -269,6 +269,7 @@ def handle_single_player_events(game, event, direction_changed):
     game.direction_update(direction, 0)
     return direction_changed
 
+
 def handle_ai_events(game, direction_changed, ai_direction):
     current_direction = game.snakes[0].direction
     direction = None
@@ -338,14 +339,14 @@ def update_snakes(game):
 
 def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun, window_width_fun,
         window_height_fun, score_type_fun,
-        game_mode_fun, qvalues=None, counter=0, agent="off"):
+        game_mode_fun, qvalues=None, counter=0, agent="off", visualise=True, exploration_rate=0):
     # pygame setup
     game = Game(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun,
                 window_width_fun, window_height_fun,
-                score_type_fun, game_mode_fun)
+                score_type_fun, game_mode_fun, visualise)
     if game_mode_fun == 5:
         counter += 1
-        snakeenv = qlearning.SnakeEnv(qvalues, counter, agent=agent)
+        snakeenv = qlearning.SnakeEnv(qvalues, counter, agent=agent, exploration_rate=exploration_rate)
         if (agent == "off"):
             counter = snakeenv.counter + 1
     running = True
@@ -362,7 +363,7 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
     while running:
         direction_changed = False
         direction_changed2 = False if game_mode_fun == 1 else None
-        if game_mode_fun != 5:
+        if visualise:
             game.screen.fill((0, 0, 0))
             board_helper.draw_border(game.screen, (255, 255, 255), board_width_fun, board_height_fun, window_width_fun,
                                      window_height_fun)
@@ -406,7 +407,7 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
         if game.is_game_over():
             game.game_over = True
             running = False
-        if game_mode_fun != 5:
+        if visualise:
             game.draw(game.screen)
             if score_type_fun == 1:
                 if game_mode_fun == 5:
@@ -436,4 +437,4 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
 
 
 run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type,
-    game_mode)
+    game_mode, visualise=True)

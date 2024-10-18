@@ -31,12 +31,12 @@ def load():
     return qvalues, counter
 
 
-for j in range(2):
+for j in range(1):
     qvalues, counter = load()
     for z in range(10):
         for i in range(100):
             qvalues, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
                                    window_height,
                                    score_type,
-                                   game_mode, qvalues=qvalues, counter=counter, agent="on")
+                                   game_mode, qvalues=qvalues, counter=counter, agent="on", visualise=False, exploration_rate=0.1)
 
