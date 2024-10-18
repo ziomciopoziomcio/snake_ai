@@ -18,7 +18,7 @@ SCORE TYPE:
 2 - score in tkinter window 
 3 - score in pygame window with QLearning counter
 '''
-game_mode = 0
+game_mode = 5
 '''
 GAME MODE:
 0 - single player
@@ -345,6 +345,8 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
     if game_mode_fun == 5:
         counter += 1
         snakeenv = qlearning.SnakeEnv(qvalues, counter, agent=agent)
+        if (agent == "off"):
+            counter = snakeenv.counter + 1
     running = True
 
     # potential tkinter window
