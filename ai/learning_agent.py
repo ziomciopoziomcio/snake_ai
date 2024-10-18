@@ -38,5 +38,5 @@ for j in range(1):
             qvalues, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
                                    window_height,
                                    score_type,
-                                   game_mode, qvalues=qvalues, counter=counter, agent="on", visualise=False, exploration_rate=0.1)
-
+                                   game_mode, qvalues=qvalues, counter=counter, agent="on", visualise=False,
+                                   exploration_rate=0.1)
