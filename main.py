@@ -132,12 +132,13 @@ class Game:
         self.food_amount = amount_of_food_class
         self.food = [self.generate_food_position() for _ in range(self.food_amount)]
         self.game_over = False
-        pygame.font.init()
-        self.font = pygame.font.SysFont(None, 36)
-        pygame.init()
-        self.screen = pygame.display.set_mode((window_width_class, window_height_class))
-        pygame.display.set_caption('Snake')
-        self.clock = pygame.time.Clock()
+        if self.game_mode != 5:
+            pygame.init()
+            pygame.font.init()
+            self.font = pygame.font.SysFont(None, 36)
+            self.screen = pygame.display.set_mode((window_width_class, window_height_class))
+            pygame.display.set_caption('Snake')
+            self.clock = pygame.time.Clock()
 
     def generate_food_position(self):
         while True:
@@ -361,9 +362,10 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
     while running:
         direction_changed = False
         direction_changed2 = False if game_mode_fun == 1 else None
-        game.screen.fill((0, 0, 0))
-        board_helper.draw_border(game.screen, (255, 255, 255), board_width_fun, board_height_fun, window_width_fun,
-                                 window_height_fun)
+        if game_mode_fun != 5:
+            game.screen.fill((0, 0, 0))
+            board_helper.draw_border(game.screen, (255, 255, 255), board_width_fun, board_height_fun, window_width_fun,
+                                     window_height_fun)
         if game_mode_fun in [0, 1]:
             for event in pygame.event.get():
                 if event.type == pygame.QUIT:
@@ -404,23 +406,23 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
         if game.is_game_over():
             game.game_over = True
             running = False
+        if game_mode_fun != 5:
+            game.draw(game.screen)
+            if score_type_fun == 1:
+                if game_mode_fun == 5:
+                    game.draw_score(game.screen, snakeenv.counter)
+                else:
+                    game.draw_score(game.screen)
+            elif score_type_fun == 2:
+                if game_mode_fun == 0:
+                    score_label.config(text=f'Score: {game.snakes[0].score}')
+                    score_label.update()
+                elif game_mode_fun == 1:
+                    score_label.config(text=f'Score:\nP1 - {game.snakes[0].score}\nP2 - {game.snakes[1].score}')
+                    score_label.update()
 
-        game.draw(game.screen)
-        if score_type_fun == 1:
-            if game_mode_fun == 5:
-                game.draw_score(game.screen, snakeenv.counter)
-            else:
-                game.draw_score(game.screen)
-        elif score_type_fun == 2:
-            if game_mode_fun == 0:
-                score_label.config(text=f'Score: {game.snakes[0].score}')
-                score_label.update()
-            elif game_mode_fun == 1:
-                score_label.config(text=f'Score:\nP1 - {game.snakes[0].score}\nP2 - {game.snakes[1].score}')
-                score_label.update()
-
-        pygame.display.update()
-        game.clock.tick(snake_speed_fun)
+            pygame.display.update()
+            game.clock.tick(snake_speed_fun)
     if game_mode_fun == 1:
         return game.snakes[0].score, game.snakes[1].score
     elif game_mode_fun == 0:
