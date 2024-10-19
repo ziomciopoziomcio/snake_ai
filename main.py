@@ -3,40 +3,37 @@ from components import snake_helper, board_helper, parameters
 import tkinter as tk
 from ai import qlearning
 
+# game variables
+# Zmienne te będą sterować zachowaniem gry.
+board_width = 20
+board_height = 20
+snake_speed = 8
+amount_of_food = 1
+snake_amount = 1
+score_type = 1
+'''
+SCORE TYPE:
+0 - no score
+1 - score in pygame window
+2 - score in tkinter window 
+3 - score in pygame window with QLearning counter
+'''
+game_mode = 5
+'''
+GAME MODE:
+0 - single player
+1 - PvP
+2 - PvAI
+3 - AIvAI
+4 - AI
+5 - QLearning
+'''
+available_colours = [(24, 139, 34), (0, 0, 255)]
 
-if __name__ == '__main__':
+# pygame variables
 
-    # game variables
-    # Zmienne te będą sterować zachowaniem gry.
-    board_width = 20
-    board_height = 20
-    snake_speed = 8
-    amount_of_food = 1
-    snake_amount = 1
-    score_type = 1
-    '''
-    SCORE TYPE:
-    0 - no score
-    1 - score in pygame window
-    2 - score in tkinter window 
-    3 - score in pygame window with QLearning counter
-    '''
-    game_mode = 5
-    '''
-    GAME MODE:
-    0 - single player
-    1 - PvP
-    2 - PvAI
-    3 - AIvAI
-    4 - AI
-    5 - QLearning
-    '''
-    available_colours = [(24, 139, 34), (0, 0, 255)]
-
-    # pygame variables
-
-    window_width = 800
-    window_height = 800
+window_width = 800
+window_height = 800
 
 
 # game objects
