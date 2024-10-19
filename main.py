@@ -3,37 +3,40 @@ from components import snake_helper, board_helper, parameters
 import tkinter as tk
 from ai import qlearning
 
-# game variables
-# Zmienne te będą sterować zachowaniem gry.
-board_width = 20
-board_height = 20
-snake_speed = 8
-amount_of_food = 1
-snake_amount = 1
-score_type = 1
-'''
-SCORE TYPE:
-0 - no score
-1 - score in pygame window
-2 - score in tkinter window 
-3 - score in pygame window with QLearning counter
-'''
-game_mode = 5
-'''
-GAME MODE:
-0 - single player
-1 - PvP
-2 - PvAI
-3 - AIvAI
-4 - AI
-5- ONLY FOR LEARNING PURPOSES
-'''
-available_colours = [(24, 139, 34), (0, 0, 255)]
 
-# pygame variables
+if __name__ == '__main__':
 
-window_width = 800
-window_height = 800
+    # game variables
+    # Zmienne te będą sterować zachowaniem gry.
+    board_width = 20
+    board_height = 20
+    snake_speed = 8
+    amount_of_food = 1
+    snake_amount = 1
+    score_type = 1
+    '''
+    SCORE TYPE:
+    0 - no score
+    1 - score in pygame window
+    2 - score in tkinter window 
+    3 - score in pygame window with QLearning counter
+    '''
+    game_mode = 5
+    '''
+    GAME MODE:
+    0 - single player
+    1 - PvP
+    2 - PvAI
+    3 - AIvAI
+    4 - AI
+    5 - QLearning
+    '''
+    available_colours = [(24, 139, 34), (0, 0, 255)]
+
+    # pygame variables
+
+    window_width = 800
+    window_height = 800
 
 
 # game objects
@@ -132,7 +135,7 @@ class Game:
         self.food_amount = amount_of_food_class
         self.food = [self.generate_food_position() for _ in range(self.food_amount)]
         self.game_over = False
-        if visualise == True:
+        if visualise:
             pygame.init()
             pygame.font.init()
             self.font = pygame.font.SysFont(None, 36)
@@ -240,13 +243,15 @@ class Game:
         return (border_left, border_right, border_up, border_down, food_vector_x, food_vector_y)
 
 
-# parameters menu
-turned_on = False
+if __name__ == '__main__':
+    # parameters menu
+    turned_on = True
 
-if turned_on:
-    board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type, game_mode = parameters.parameters_menu(
-        board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type,
-        game_mode)
+    if turned_on:
+        board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width, score_type, game_mode = parameters.parameters_menu(
+            board_width, board_height, snake_speed, amount_of_food, snake_amount, window_height, window_width,
+            score_type,
+            game_mode)
 
 
 # game mode 0 - single player
@@ -340,10 +345,12 @@ def update_snakes(game):
 def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun, window_width_fun,
         window_height_fun, score_type_fun,
         game_mode_fun, qvalues=None, counter=0, agent="off", visualise=True, exploration_rate=0):
+    if game_mode_fun == 6:
+        return 0
     # pygame setup
     game = Game(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun,
                 window_width_fun, window_height_fun,
-                score_type_fun, game_mode_fun, visualise)
+                score_type_fun, game_mode_fun, visualise=visualise)
     if game_mode_fun == 5:
         counter += 1
         snakeenv = qlearning.SnakeEnv(qvalues, counter, agent=agent, exploration_rate=exploration_rate)
@@ -436,5 +443,6 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
         return 0
 
 
-run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type,
-    game_mode, visualise=True)
+if __name__ == '__main__':
+    run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width, window_height, score_type,
+        game_mode, visualise=True)
