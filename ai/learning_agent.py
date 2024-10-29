@@ -43,7 +43,7 @@ start_time = time.time()
 qvalues, counter = load()
 
 for j in range(50):
-    for z in range(50):
+    for z in range(100):
         for i in range(100):
             qvalues, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
                                    window_height,
