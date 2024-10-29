@@ -17,9 +17,6 @@ window_width = 800
 window_height = 800
 turned_on = False
 
-qvalues = {}
-counter = 0
-
 
 def load():
     file_path = os.path.join(os.path.dirname(__file__), 'qvalues.json')
@@ -42,13 +39,17 @@ def save(qvalues_save, counter_save):
         json.dump(data, f)
 
 
-for j in range(1):
-    qvalues, counter = load()
+start_time = time.time()
+qvalues, counter = load()
+
+for j in range(5):
     for z in range(50):
-        save(qvalues, counter)
         for i in range(100):
             qvalues, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
                                    window_height,
                                    score_type,
                                    game_mode, qvalues=qvalues, counter=counter, agent="on", visualise=False,
                                    exploration_rate=0.1)
+save(qvalues, counter)
+end_time = time.time()
+print("Time taken: ", end_time - start_time)
