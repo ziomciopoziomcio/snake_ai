@@ -433,7 +433,8 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
     elif game_mode_fun == 0:
         return game.snakes[0].score
     elif game_mode_fun == 5:
-        snakeenv.save()
+        if agent == "off":
+            snakeenv.save()
         print(f'Game number: {counter}, Score: {game.snakes[0].score}')
         return snakeenv.qvalues, counter
     else:
