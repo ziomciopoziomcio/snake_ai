@@ -31,9 +31,21 @@ def load():
     return qvalues, counter
 
 
+def save(qvalues_save, counter_save):
+    file_path = os.path.join(os.path.dirname(__file__), 'qvalues.json')
+    qvalues_str_keys = {str(k): v.tolist() for k, v in qvalues_save.items()}
+    data = {
+        'qvalues': qvalues_str_keys,
+        'counter': counter_save
+    }
+    with open(file_path, 'w') as f:
+        json.dump(data, f)
+
+
 for j in range(1):
     qvalues, counter = load()
-    for z in range(10):
+    for z in range(50):
+        save(qvalues, counter)
         for i in range(100):
             qvalues, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
                                    window_height,
