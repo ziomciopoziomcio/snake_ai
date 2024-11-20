@@ -242,17 +242,20 @@ class Game:
 
     def board_vectors(self, snake_num):
         head_position = self.snakes[snake_num].get_head_position()
+        vector=[]
         for x in range(self.board_width):
             for y in range(self.board_height):
                 if [x, y] in self.snakes[snake_num].positions:
                     if x == head_position[0] and y == head_position[1]:
-                        print('2', end='')
-                    print('1', end='')
+                        vector.append(2)
+                    else:
+                        vector.append(1)
                 elif [x, y] in self.food:
-                    print('3', end='')
+                    vector.append(3)
                 else:
-                    print('0', end='')
+                    vector.append(0)
             # print()
+        return vector
 
 
 if __name__ == '__main__':
@@ -370,7 +373,8 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
             counter = snakeenv.counter + 1
     elif game_mode_fun == 6:
         counter += 1
-        snakeenv = deepqnetwork.SnakeEnv(qnetwork, counter, agent=agent, exploration_rate=exploration_rate)
+        snakeenv = deepqnetwork.SnakeEnv(qnetwork, counter, board_width_fun, board_height_fun, agent=agent,
+                                         exploration_rate=exploration_rate)
         if (agent == "off"):
             counter = snakeenv.counter + 1
     running = True
