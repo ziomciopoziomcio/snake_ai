@@ -1,7 +1,7 @@
 import pygame
 from components import snake_helper, board_helper, parameters
 import tkinter as tk
-from ai import qlearning
+from ai import qlearning, deepqnetwork
 
 # game variables
 # Zmienne te będą sterować zachowaniem gry.
@@ -27,6 +27,7 @@ GAME MODE:
 3 - AIvAI
 4 - AI
 5 - QLearning
+6 - deepQNetwork
 '''
 available_colours = [(24, 139, 34), (0, 0, 255)]
 
@@ -166,7 +167,7 @@ class Game:
             score_surface = self.font.render(score_text, True, (0, 0, 0))
             score_rect = score_surface.get_rect(center=(window_width // 2, 20))
             screen.blit(score_surface, score_rect)
-        elif self.game_mode == 5:
+        elif self.game_mode == 5 or self.game_mode == 6:
             score_text = f'Score: {self.snakes[0].score}, Counter: {counter}'
             score_surface = self.font.render(score_text, True, (0, 0, 0))
             score_rect = score_surface.get_rect(center=(window_width // 2, 20))
@@ -238,6 +239,20 @@ class Game:
         food_vector_x = food_positions[0][0] - head_position[0]
         food_vector_y = food_positions[0][1] - head_position[1]
         return (border_left, border_right, border_up, border_down, food_vector_x, food_vector_y)
+
+    def board_vectors(self, snake_num):
+        head_position = self.snakes[snake_num].get_head_position()
+        for x in range(self.board_width):
+            for y in range(self.board_height):
+                if [x, y] in self.snakes[snake_num].positions:
+                    if x == head_position[0] and y == head_position[1]:
+                        print('2', end='')
+                    print('1', end='')
+                elif [x, y] in self.food:
+                    print('3', end='')
+                else:
+                    print('0', end='')
+            # print()
 
 
 if __name__ == '__main__':
@@ -341,8 +356,8 @@ def update_snakes(game):
 
 def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun, window_width_fun,
         window_height_fun, score_type_fun,
-        game_mode_fun, qvalues=None, counter=0, agent="off", visualise=True, exploration_rate=0):
-    if game_mode_fun == 6:
+        game_mode_fun, qvalues=None, qnetwork=None, counter=0, agent="off", visualise=True, exploration_rate=0):
+    if game_mode_fun == 7:
         return 0
     # pygame setup
     game = Game(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun,
@@ -351,6 +366,11 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
     if game_mode_fun == 5:
         counter += 1
         snakeenv = qlearning.SnakeEnv(qvalues, counter, agent=agent, exploration_rate=exploration_rate)
+        if (agent == "off"):
+            counter = snakeenv.counter + 1
+    elif game_mode_fun == 6:
+        counter += 1
+        snakeenv = deepqnetwork.SnakeEnv(qnetwork, counter, agent=agent, exploration_rate=exploration_rate)
         if (agent == "off"):
             counter = snakeenv.counter + 1
     running = True
@@ -405,6 +425,30 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
             new_vectors = game.location_vectors(0)
             snakeenv.update(vectors, action, new_vectors, reward)
 
+        elif game_mode_fun == 6:
+            vectors = game.board_vectors(0)
+            action = snakeenv.get_action(vectors)
+            if action == 0:
+                direction_changed = handle_ai_events(game, direction_changed, 'UP')
+            elif action == 1:
+                direction_changed = handle_ai_events(game, direction_changed, 'DOWN')
+            elif action == 2:
+                direction_changed = handle_ai_events(game, direction_changed, 'LEFT')
+            elif action == 3:
+                direction_changed = handle_ai_events(game, direction_changed, 'RIGHT')
+            points_before = game.snakes[0].score
+            update_snakes(game)
+            points_after = game.snakes[0].score
+            alive_after = game.snakes[0].alive
+            if not alive_after:
+                reward = -1
+            elif points_after > points_before:
+                reward = 1
+            else:
+                reward = 0
+            new_vectors = game.board_vectors(0)
+            snakeenv.update(vectors, action, new_vectors, reward)
+
         if game_mode_fun in [0, 1]:
             update_snakes(game)
 
@@ -414,7 +458,7 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
         if visualise:
             game.draw(game.screen)
             if score_type_fun == 1:
-                if game_mode_fun == 5:
+                if game_mode_fun == 5 or game_mode_fun == 6:
                     game.draw_score(game.screen, snakeenv.counter)
                 else:
                     game.draw_score(game.screen)
@@ -437,6 +481,11 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
             snakeenv.save()
         print(f'Game number: {counter}, Score: {game.snakes[0].score}')
         return snakeenv.qvalues, counter
+    elif game_mode_fun == 6:
+        if agent == "off":
+            snakeenv.save()
+        print(f'Game number: {counter}, Score: {game.snakes[0].score}')
+        return snakeenv.qnetwork, counter
     else:
         return 0
 
