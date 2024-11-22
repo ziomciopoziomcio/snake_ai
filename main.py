@@ -218,7 +218,7 @@ class Game:
         head_position = snake.get_head_position()
         for food in self.food:
             if head_position == food:
-                # snake.update_length(snake.length + 1)
+                snake.update_length(snake.length + 1)
                 snake.score += 1
                 self.food.remove(food)
                 self.food.append(self.generate_food_position())
