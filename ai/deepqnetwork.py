@@ -55,13 +55,12 @@ class SnakeEnv:
 
     def load(self):
         file_path = os.path.join(os.path.dirname(__file__), 'deepqnetwork.h5')
-        with open(file_path, 'r') as f:
-            qnetwork = keras.Sequential()
-            qnetwork.add(keras.layers.Dense(24, input_shape=(20 * 20,), activation='relu'))
-            qnetwork.add(keras.layers.Dense(24, activation='relu'))
-            qnetwork.add(keras.layers.Dense(4, activation='linear'))
-            qnetwork.compile(optimizer='adam', loss='mse')
-            qnetwork.load_weights(file_path)
+        qnetwork = keras.Sequential()
+        qnetwork.add(keras.layers.Dense(24, input_shape=(20 * 20,), activation='relu'))
+        qnetwork.add(keras.layers.Dense(24, activation='relu'))
+        qnetwork.add(keras.layers.Dense(4, activation='linear'))
+        qnetwork.compile(optimizer='adam', loss='mse')
+        qnetwork.load_weights(file_path)
         self.qnetwork = qnetwork
         file_path = os.path.join(os.path.dirname(__file__), 'deepqnetworkcounter.json')
         with open(file_path, 'r') as f:
