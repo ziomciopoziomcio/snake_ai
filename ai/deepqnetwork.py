@@ -25,8 +25,8 @@ class SnakeEnv:
     def update(self, state, action, next_state, reward):
         state = np.array([state])
         next_state = np.array([next_state])
-        result = self.qnetwork.predict(state)
-        result_next = self.qnetwork.predict(next_state)
+        result = self.qnetwork.predict(state, verbose=0)
+        result_next = self.qnetwork.predict(next_state, verbose=0)
         result[0][action] = result[0][action] + self.learning_rate * (
                 reward + self.discount * max(result_next[0]) - result[0][action])
         self.qnetwork.fit(state, result, epochs=1, verbose=0)
@@ -37,11 +37,11 @@ class SnakeEnv:
         if p < self.exploration_rate:
             return random.randint(0, 3)
         else:
-            # result = self.qnetwork.predict(state)
+            # result = self.qnetwork.predict(state, verbose=0)
             # value = max(result)
             # index = random.choice([i for i, v in enumerate(result) if v == value])
             # return index
-            result = self.qnetwork.predict(state)
+            result = self.qnetwork.predict(state, verbose=0)
             index = np.argmax(result[0])  # Use np.argmax to find the index of the maximum value
             return index
 
