@@ -42,13 +42,12 @@ turned_on = False
 
 def load():
     file_path = os.path.join(os.path.dirname(__file__), 'deepqnetwork.h5')
-    with open(file_path, 'r') as f:
-        qnetwork = keras.Sequential()
-        qnetwork.add(keras.layers.Dense(24, input_shape=(20 * 20,), activation='relu'))
-        qnetwork.add(keras.layers.Dense(24, activation='relu'))
-        qnetwork.add(keras.layers.Dense(4, activation='linear'))
-        qnetwork.compile(optimizer='adam', loss='mse')
-        qnetwork.load_weights(file_path)
+    qnetwork = keras.Sequential()
+    qnetwork.add(keras.layers.Dense(24, input_shape=(20 * 20,), activation='relu'))
+    qnetwork.add(keras.layers.Dense(24, activation='relu'))
+    qnetwork.add(keras.layers.Dense(4, activation='linear'))
+    qnetwork.compile(optimizer='adam', loss='mse')
+    qnetwork.load_weights(file_path)
     qnetwork = qnetwork
     file_path = os.path.join(os.path.dirname(__file__), 'deepqnetworkcounter.json')
     with open(file_path, 'r') as f:
@@ -68,7 +67,7 @@ def save(qnetwork_save, counter_save):
 start_time = time.time()
 qnetwork, counter = load()
 
-for j in range(100):
+for j in range(300):
     for z in range(1):
         for i in range(1):
             qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
