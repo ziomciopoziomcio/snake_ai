@@ -376,7 +376,7 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
         snakeenv = deepqnetwork.SnakeEnv(qnetwork, counter, board_width_fun, board_height_fun, agent=agent,
                                          exploration_rate=exploration_rate)
         if (agent == "off"):
-            counter = snakeenv.counter + 1
+            snakeenv.counter += 1
     running = True
 
     # potential tkinter window
@@ -488,6 +488,7 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
     elif game_mode_fun == 6:
         if agent == "off":
             snakeenv.save()
+            counter = snakeenv.counter
         print(f'Game number: {counter}, Score: {game.snakes[0].score}')
         return snakeenv.qnetwork, counter
     else:
