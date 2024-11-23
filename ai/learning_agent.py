@@ -115,7 +115,7 @@ if acceleration_mode == "y":
     counter = counter_glob
 else:
     for j in range(1):
-        for z in range(1):
+        for z in range(10):
             for i in range(5):
                 qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
                                         window_height,
