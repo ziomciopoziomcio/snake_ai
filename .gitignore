@@ -234,3 +234,4 @@ fabric.properties
 
 
 cuda-repo-wsl-ubuntu-12-6-local_12.6.3-1_amd64.deb
+cudnn-local-repo-ubuntu2404-9.5.1_1.0-1_amd64.deb
