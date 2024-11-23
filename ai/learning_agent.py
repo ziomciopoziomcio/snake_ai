@@ -67,9 +67,9 @@ def save(qnetwork_save, counter_save):
 start_time = time.time()
 qnetwork, counter = load()
 
-for j in range(300):
+for j in range(1):
     for z in range(1):
-        for i in range(1):
+        for i in range(5):
             qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
                                     window_height,
                                     score_type,
