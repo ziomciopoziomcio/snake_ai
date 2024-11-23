@@ -1,4 +1,6 @@
 setuptools
 wheel
-pygame
-numpy
+pygame~=2.6.1
+numpy~=2.0.2
+keras~=3.6.0
+tensorflow~=2.18.0

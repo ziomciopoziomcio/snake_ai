@@ -3,10 +3,11 @@ import random
 import json
 import os
 import keras
+import tensorflow as tf
 
 
 class SnakeEnv:
-    def __init__(self, qnetwork, counter, width, height, agent="off", exploration_rate=0.1):
+    def __init__(self, qnetwork, counter, width, height, agent="off", exploration_rate=0.1, acceleration_mode=False):
         if agent == "off":
             self.load()
             self.qnetwork = keras.Sequential()
@@ -18,21 +19,43 @@ class SnakeEnv:
         else:
             self.qnetwork = qnetwork
             self.counter = counter
+        if acceleration_mode:
+            self.mode = 1
+        else:
+            self.mode = 0
         self.learning_rate = 0.1
         self.discount = 0.9
         self.exploration_rate = exploration_rate
 
     def update(self, state, action, next_state, reward):
-        state = np.array([state])
-        next_state = np.array([next_state])
-        result = self.qnetwork.predict(state, verbose=0)
-        result_next = self.qnetwork.predict(next_state, verbose=0)
-        result[0][action] = result[0][action] + self.learning_rate * (
-                reward + self.discount * max(result_next[0]) - result[0][action])
-        self.qnetwork.fit(state, result, epochs=1, verbose=0)
+        if self.mode == 1:
+            state = tf.convert_to_tensor([state], dtype=tf.float32)
+            next_state = tf.convert_to_tensor([next_state], dtype=tf.float32)
+            result = self.qnetwork(state)
+            result_next = self.qnetwork(next_state)
+            target = tf.identity(result)
+            max_next_q = tf.reduce_max(result_next[0])
+            updated_value = reward + self.discount * max_next_q
+            target = tf.tensor_scatter_nd_update(
+                target,
+                indices=[[0, action]],
+                updates=[target[0, action] + self.learning_rate * (updated_value - target[0, action])]
+            )
+            self.qnetwork.fit(state, target, epochs=1, verbose=0)
+        else:
+            state = np.array([state])
+            next_state = np.array([next_state])
+            result = self.qnetwork.predict(state, verbose=0)
+            result_next = self.qnetwork.predict(next_state, verbose=0)
+            result[0][action] = result[0][action] + self.learning_rate * (
+                    reward + self.discount * max(result_next[0]) - result[0][action])
+            self.qnetwork.fit(state, result, epochs=1, verbose=0)
 
     def get_action(self, state):
-        state = np.array([state])
+        if self.mode == 1:
+            state = tf.convert_to_tensor([state], dtype=tf.float32)
+        else:
+            state = np.array([state])
         p = random.random()
         if p < self.exploration_rate:
             return random.randint(0, 3)
@@ -41,9 +64,14 @@ class SnakeEnv:
             # value = max(result)
             # index = random.choice([i for i, v in enumerate(result) if v == value])
             # return index
-            result = self.qnetwork.predict(state, verbose=0)
-            index = np.argmax(result[0])  # Use np.argmax to find the index of the maximum value
-            return index
+            if self.mode == 1:
+                result = self.qnetwork(state)
+                index = tf.argmax(result[0])
+                return index
+            else:
+                result = self.qnetwork.predict(state, verbose=0)
+                index = np.argmax(result[0])  # Use np.argmax to find the index of the maximum value
+                return index
 
     def save(self):
         file_path = os.path.join(os.path.dirname(__file__), 'deepqnetwork.h5')

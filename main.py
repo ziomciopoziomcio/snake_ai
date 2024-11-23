@@ -359,7 +359,7 @@ def update_snakes(game):
 
 def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun, window_width_fun,
         window_height_fun, score_type_fun,
-        game_mode_fun, qvalues=None, qnetwork=None, counter=0, agent="off", visualise=True, exploration_rate=0):
+        game_mode_fun, qvalues=None, qnetwork=None, counter=0, agent="off", visualise=True, exploration_rate=0, acceleration=False):
     if game_mode_fun == 7:
         return 0
     # pygame setup
@@ -374,7 +374,7 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
     elif game_mode_fun == 6:
         counter += 1
         snakeenv = deepqnetwork.SnakeEnv(qnetwork, counter, board_width_fun, board_height_fun, agent=agent,
-                                         exploration_rate=exploration_rate)
+                                         exploration_rate=exploration_rate, acceleration_mode=acceleration)
         if (agent == "off"):
             snakeenv.counter += 1
     running = True
