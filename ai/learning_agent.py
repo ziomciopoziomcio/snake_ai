@@ -100,9 +100,9 @@ if acceleration_mode == "y":
     qnetwork_glob = qnetwork
     counter_glob = counter
     with tf.device('/GPU:0'):
-        for j in range(1):
-            for z in range(1):
-                for i in range(5):
+        for j in range(4):
+            for z in range(10):
+                for i in range(20):
                     run_with_tf(board_width, board_height, snake_speed, amount_of_food,
                                                     snake_amount,
                                                     window_width, window_height, score_type, game_mode,
