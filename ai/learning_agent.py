@@ -47,7 +47,12 @@ game_mode = 6
 window_width = 800
 window_height = 800
 turned_on = False
+endless = False
 
+if int(input("For endless mode press 1")) == 1:
+    endless = True
+else:
+    print("endless mode off")
 
 # def load():
 #     file_path = os.path.join(os.path.dirname(__file__), 'qvalues.json')
@@ -93,35 +98,48 @@ def save(qnetwork_save, counter_save):
     with open(file_path, 'w') as f:
         json.dump({'counter': counter_save}, f)
 
+if endless == False:
+    start_time = time.time()
+    qnetwork, counter = load()
+    if acceleration_mode == "y":
+        qnetwork_glob = qnetwork
+        counter_glob = counter
+        with tf.device('/GPU:0'):
+            for j in range(4):
+                for z in range(10):
+                    for i in range(20):
+                        run_with_tf(board_width, board_height, snake_speed, amount_of_food,
+                                                        snake_amount,
+                                                        window_width, window_height, score_type, game_mode,
+                                                        qnetwork=qnetwork_glob,
+                                                        counter=counter_glob)
+                        # qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount,
+                        #                         window_width, window_height, score_type, game_mode, qnetwork=qnetwork,
+                        #                         counter=counter, agent="on", visualise=False, exploration_rate=0.1)
+        qnetwork = qnetwork_glob
+        counter = counter_glob
+    else:
+        for j in range(1):
+            for z in range(300):
+                for i in range(10):
+                    qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
+                                            window_height,
+                                            score_type,
+                                            game_mode, qnetwork=qnetwork, counter=counter, agent="on", visualise=False,
+                                            exploration_rate=0.1)
 
-start_time = time.time()
-qnetwork, counter = load()
-if acceleration_mode == "y":
-    qnetwork_glob = qnetwork
-    counter_glob = counter
-    with tf.device('/GPU:0'):
-        for j in range(4):
-            for z in range(10):
-                for i in range(20):
-                    run_with_tf(board_width, board_height, snake_speed, amount_of_food,
-                                                    snake_amount,
-                                                    window_width, window_height, score_type, game_mode,
-                                                    qnetwork=qnetwork_glob,
-                                                    counter=counter_glob)
-                    # qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount,
-                    #                         window_width, window_height, score_type, game_mode, qnetwork=qnetwork,
-                    #                         counter=counter, agent="on", visualise=False, exploration_rate=0.1)
-    qnetwork = qnetwork_glob
-    counter = counter_glob
-else:
-    for j in range(1):
-        for z in range(300):
-            for i in range(10):
-                qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
-                                        window_height,
-                                        score_type,
-                                        game_mode, qnetwork=qnetwork, counter=counter, agent="on", visualise=False,
-                                        exploration_rate=0.1)
+if endless:
+    qnetwork, counter = load()
+    while True:
+        for x in range(1000):
+            qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
+                                    window_height,
+                                    score_type,
+                                    game_mode, qnetwork=qnetwork, counter=counter, agent="on", visualise=False,
+                                    exploration_rate=0.1)
+        save(qnetwork, counter)
+
+
 save(qnetwork, counter)
 end_time = time.time()
 print("Time taken: ", end_time - start_time)
