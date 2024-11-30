@@ -132,11 +132,13 @@ if endless:
     qnetwork, counter = load()
     while True:
         for x in range(1000):
-            qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
-                                    window_height,
-                                    score_type,
-                                    game_mode, qnetwork=qnetwork, counter=counter, agent="on", visualise=False,
-                                    exploration_rate=0.1)
+            run_with_tf(board_width, board_height, snake_speed, amount_of_food,
+                                                        snake_amount,
+                                                        window_width, window_height, score_type, game_mode,
+                                                        qnetwork=qnetwork_glob,
+                                                        counter=counter_glob)
+        qnetwork = qnetwork_glob
+        counter = counter_glob
         save(qnetwork, counter)
 
 
