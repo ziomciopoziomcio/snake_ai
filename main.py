@@ -241,20 +241,35 @@ class Game:
         return (border_left, border_right, border_up, border_down, food_vector_x, food_vector_y)
 
     def board_vectors(self, snake_num):
+        debug_mode = 0
         head_position = self.snakes[snake_num].get_head_position()
         vector=[]
         for x in range(self.board_width):
+            if debug_mode:
+                debuging=[]
             for y in range(self.board_height):
                 if [x, y] in self.snakes[snake_num].positions:
                     if x == head_position[0] and y == head_position[1]:
                         vector.append(2)
+                        if debug_mode:
+                            debuging.append(2)
                     else:
                         vector.append(1)
+                        if debug_mode:
+                            debuging.append(1)
                 elif [x, y] in self.food:
                     vector.append(3)
+                    if debug_mode:
+                        debuging.append(3)
                 else:
                     vector.append(0)
-            # print()
+                    if debug_mode:
+                        debuging.append(0)
+            if debug_mode:
+                print(debuging)
+        if debug_mode:
+            print("\n")
+
         return vector
 
 
