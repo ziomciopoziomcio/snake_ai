@@ -10,6 +10,7 @@ from main import run
 import time
 
 
+
 acceleration_mode = input("Acceleration mode? ONLY WITH NVIDIA GPU (y/n): ")
 if acceleration_mode == "y":
     import tensorflow as tf
@@ -26,16 +27,16 @@ if acceleration_mode == "y":
     global qnetwork_glob
 
 
-    @tf.function
-    def run_with_tf(board_width, board_height, snake_speed, amount_of_food, snake_amount,
-                    window_width, window_height, score_type, game_mode, qnetwork, counter):
-        qnetwork_glob_pom, counter_loc = run(board_width, board_height, snake_speed, amount_of_food, snake_amount,
-                   window_width, window_height, score_type, game_mode, qnetwork=qnetwork, counter=counter,
-                   agent="on", visualise=False, exploration_rate=0.1, acceleration=True)
-        global qnetwork_glob
-        qnetwork_glob = qnetwork_glob_pom
-        global counter_glob
-        counter_glob = counter_loc
+# @tf.function
+# def run_with_tf(board_width, board_height, snake_speed, amount_of_food, snake_amount,
+#                 window_width, window_height, score_type, game_mode, qnetwork, counter):
+#     qnetwork_glob_pom, counter_loc = run(board_width, board_height, snake_speed, amount_of_food, snake_amount,
+#                window_width, window_height, score_type, game_mode, qnetwork=qnetwork, counter=counter,
+#                agent="on", visualise=False, exploration_rate=0.1, acceleration=True)
+#     global qnetwork_glob
+#     qnetwork_glob = qnetwork_glob_pom
+#     global counter_glob
+#     counter_glob = counter_loc
 
 board_width = 20
 board_height = 20
@@ -104,15 +105,15 @@ if endless == False:
     if acceleration_mode == "y":
         qnetwork_glob = qnetwork
         counter_glob = counter
-        with tf.device('/GPU:0'):
-            for j in range(4):
-                for z in range(10):
-                    for i in range(20):
-                        run_with_tf(board_width, board_height, snake_speed, amount_of_food,
-                                                        snake_amount,
-                                                        window_width, window_height, score_type, game_mode,
-                                                        qnetwork=qnetwork_glob,
-                                                        counter=counter_glob)
+        # with tf.device('/GPU:0'):
+            # for j in range(4):
+            #     for z in range(10):
+            #         for i in range(20):
+                        # run_with_tf(board_width, board_height, snake_speed, amount_of_food,
+                        #                                 snake_amount,
+                        #                                 window_width, window_height, score_type, game_mode,
+                        #                                 qnetwork=qnetwork_glob,
+                        #                                 counter=counter_glob)
                         # qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount,
                         #                         window_width, window_height, score_type, game_mode, qnetwork=qnetwork,
                         #                         counter=counter, agent="on", visualise=False, exploration_rate=0.1)
@@ -131,14 +132,12 @@ if endless == False:
 if endless:
     qnetwork, counter = load()
     while True:
-        for x in range(1000):
-            run_with_tf(board_width, board_height, snake_speed, amount_of_food,
-                                                        snake_amount,
-                                                        window_width, window_height, score_type, game_mode,
-                                                        qnetwork=qnetwork_glob,
-                                                        counter=counter_glob)
-        qnetwork = qnetwork_glob
-        counter = counter_glob
+        for x in range(200):
+            qnetwork, counter = run(board_width, board_height, snake_speed, amount_of_food, snake_amount, window_width,
+                                    window_height,
+                                    score_type,
+                                    game_mode, qnetwork=qnetwork, counter=counter, agent="on", visualise=False,
+                                    exploration_rate=0.1)
         save(qnetwork, counter)
 
 
