@@ -250,17 +250,17 @@ class Game:
             for y in range(self.board_height):
                 if [x, y] in self.snakes[snake_num].positions:
                     if x == head_position[0] and y == head_position[1]:
-                        vector.append(2)
-                        if debug_mode:
-                            debuging.append(2)
-                    else:
                         vector.append(1)
                         if debug_mode:
                             debuging.append(1)
+                    else:
+                        vector.append(0.5)
+                        if debug_mode:
+                            debuging.append(0.5)
                 elif [x, y] in self.food:
-                    vector.append(3)
+                    vector.append(-1)
                     if debug_mode:
-                        debuging.append(3)
+                        debuging.append(-1)
                 else:
                     vector.append(0)
                     if debug_mode:
