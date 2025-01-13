@@ -70,6 +70,7 @@ class SnakeEnv:
                 return index
             else:
                 result = self.qnetwork.predict(state, verbose=0)
+                #print(result)
                 index = np.argmax(result[0])  # Use np.argmax to find the index of the maximum value
                 return index
 
