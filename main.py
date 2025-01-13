@@ -241,13 +241,13 @@ class Game:
         return (border_left, border_right, border_up, border_down, food_vector_x, food_vector_y)
 
     def board_vectors(self, snake_num):
-        debug_mode = 0
+        debug_mode = 1
         head_position = self.snakes[snake_num].get_head_position()
         vector=[]
-        for x in range(self.board_width):
+        for y in range(self.board_height):
             if debug_mode:
                 debuging=[]
-            for y in range(self.board_height):
+            for x in range(self.board_width):
                 if [x, y] in self.snakes[snake_num].positions:
                     if x == head_position[0] and y == head_position[1]:
                         vector.append(1)
