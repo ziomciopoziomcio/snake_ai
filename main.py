@@ -241,7 +241,7 @@ class Game:
         return (border_left, border_right, border_up, border_down, food_vector_x, food_vector_y)
 
     def board_vectors(self, snake_num):
-        debug_mode = 1
+        debug_mode = 0
         head_position = self.snakes[snake_num].get_head_position()
         vector=[]
         for y in range(self.board_height):
