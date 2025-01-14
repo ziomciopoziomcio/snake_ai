@@ -459,10 +459,14 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
             update_snakes(game)
             points_after = game.snakes[0].score
             alive_after = game.snakes[0].alive
+            # if not alive_after:
+            #     reward = -1
+            # elif points_after > points_before:
+            #     reward = 1
+            # else:
+            #     reward = 0
             if not alive_after:
                 reward = -1
-            elif points_after > points_before:
-                reward = 1
             else:
                 reward = 0
             new_vectors = game.board_vectors(0)
