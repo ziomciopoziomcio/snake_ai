@@ -9,13 +9,13 @@ import tensorflow as tf
 class SnakeEnv:
     def __init__(self, qnetwork, counter, width, height, agent="off", exploration_rate=0.1, acceleration_mode=False):
         if agent == "off":
+            self.counter = 0
             self.load()
             self.qnetwork = keras.Sequential()
             self.qnetwork.add(keras.layers.Dense(24, input_shape=(width * height,), activation='relu'))
             self.qnetwork.add(keras.layers.Dense(24, activation='relu'))
             self.qnetwork.add(keras.layers.Dense(4, activation='linear'))
             self.qnetwork.compile(optimizer='adam', loss='mse')
-            self.counter = 0
         else:
             self.qnetwork = qnetwork
             self.counter = counter
