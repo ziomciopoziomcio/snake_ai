@@ -467,10 +467,10 @@ def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, 
             #     reward = 0
             if not alive_after:
                 reward = -1
-            else:
-                reward = 0
-            new_vectors = game.board_vectors(0)
-            snakeenv.update(vectors, action, new_vectors, reward)
+                new_vectors = game.board_vectors(0)
+                snakeenv.update(vectors, action, new_vectors, reward)
+            # new_vectors = game.board_vectors(0)
+            # snakeenv.update(vectors, action, new_vectors, reward)
 
         if game_mode_fun in [0, 1]:
             update_snakes(game)
