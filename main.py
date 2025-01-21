@@ -83,8 +83,8 @@ class Snake:
         return snake_helper.random_direction(directions)
 
     def move(self, direction):
-        if not self.alive:
-            return
+        # if not self.alive:
+        #     return
         current_position = self.positions[0]
         if direction == 'UP':
             new_position = [current_position[0], current_position[1] - 1]
