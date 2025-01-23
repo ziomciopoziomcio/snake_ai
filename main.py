@@ -243,10 +243,10 @@ class Game:
     def board_vectors(self, snake_num):
         debug_mode = 0
         head_position = self.snakes[snake_num].get_head_position()
-        vector=[]
+        vector = []
         for y in range(self.board_height):
             if debug_mode:
-                debuging=[]
+                debuging = []
             for x in range(self.board_width):
                 if [x, y] in self.snakes[snake_num].positions:
                     if x == head_position[0] and y == head_position[1]:
@@ -320,10 +320,10 @@ def handle_ai_events(game, direction_changed, ai_direction):
     elif ai_direction == 'RIGHT' and current_direction != 'LEFT':
         direction_changed = True
         direction = 'RIGHT'
-    if direction:
-        game.direction_update(direction, 0)
-    else:
+    if direction is None:
         game.direction_update(current_direction, 0)
+    else:
+        game.direction_update(direction, 0)
     return direction_changed
 
 
@@ -374,7 +374,8 @@ def update_snakes(game):
 
 def run(board_width_fun, board_height_fun, snake_speed_fun, amount_of_food_fun, snake_amount_fun, window_width_fun,
         window_height_fun, score_type_fun,
-        game_mode_fun, qvalues=None, qnetwork=None, counter=0, agent="off", visualise=True, exploration_rate=0, acceleration=False):
+        game_mode_fun, qvalues=None, qnetwork=None, counter=0, agent="off", visualise=True, exploration_rate=0,
+        acceleration=False):
     if game_mode_fun == 7:
         return 0
     # pygame setup
