@@ -47,8 +47,11 @@ class SnakeEnv:
             next_state = np.array([next_state])
             result = self.qnetwork.predict(state, verbose=0)
             result_next = self.qnetwork.predict(next_state, verbose=0)
-            result[0][action] = result[0][action] + self.learning_rate * (
-                    reward + self.discount * max(result_next[0]) - result[0][action])
+            if reward == -1:
+                result[0][action] = reward
+            else:
+                result[0][action] = result[0][action] + self.learning_rate * (
+                        reward + self.discount * max(result_next[0]) - result[0][action])
             self.qnetwork.fit(state, result, epochs=1, verbose=0)
 
     def get_action(self, state):
